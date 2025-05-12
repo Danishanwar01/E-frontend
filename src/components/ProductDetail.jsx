@@ -15,7 +15,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     fetchProductById(id)
-      .then(r => {
+      .then((r) => {
         setProduct(r.data);
         setSelectedSize(r.data.sizes[0] || '');
       })
@@ -23,116 +23,126 @@ export default function ProductDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleQuantity = (type) => {
-    setQuantity(prev => Math.max(1, type === 'inc' ? prev + 1 : prev - 1));
-  };
+  const adjustQty = (dir) => setQuantity((q) => Math.max(1, dir === 'up' ? q + 1 : q - 1));
 
-  if (loading) return <div className="loader">Loading...</div>;
-  if (error) return <div className="error">{error}</div>;
+  if (loading) {
+    return (
+      <div className="pd-loader">
+        <div className="spinner"></div>
+        <p>Loading product details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="pd-error">
+        <h2>Product not found</h2>
+        <p>Sorry, we couldn’t find the product you’re looking for.</p>
+        <button onClick={() => navigate(-1)}>Go back</button>
+      </div>
+    );
+  }
 
   const { title, description, price, discount, colors, sizes, images, category, subcategory } = product;
-  const finalPrice = discount > 0 ? (price * (1 - discount/100)).toFixed(2) : price;
+  const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price;
 
   return (
-    <div className="product-detail">
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        <span>‹</span> Continue Shopping
+    <div className="pd-container">
+      <button className="pd-back" onClick={() => navigate(-1)}>
+        ← Continue Shopping
       </button>
 
-      <div className="product-layout">
-        {/* Image Gallery */}
-        <div className="gallery-section">
-          <div className="main-image">
-            <img 
-              src={`http://localhost:5000${images[selectedImage]}`} 
-              alt={title} 
-              className="product-hero" 
-            />
-            {discount > 0 && (
-              <div className="discount-badge">-{discount}%</div>
-            )}
+      <div className="pd-grid">
+        {/* Gallery */}
+        <div className="pd-gallery">
+          <div className="pd-main-img">
+            <img src={`http://localhost:5000${images[selectedImage]}`} alt={`${title} - Main view`} />
+            {discount > 0 && <div className="pd-discount">-{discount}%</div>}
           </div>
-          
-          <div className="thumbnail-grid">
+          <div className="pd-thumbs">
             {images.map((img, i) => (
-              <img
+              <button
                 key={i}
-                src={`http://localhost:5000${img}`}
-                alt={`${title} - ${i + 1}`}
-                className={`thumbnail ${i === selectedImage ? 'active' : ''}`}
+                className={`pd-thumb ${i === selectedImage ? 'active' : ''}`}
                 onClick={() => setSelectedImage(i)}
-              />
+                aria-label={`View image ${i + 1} of ${title}`}
+              >
+                <img src={`http://localhost:5000${img}`} alt={`${title} - Thumbnail ${i + 1}`} />
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="info-section">
-          <div className="product-header">
-            <h1>{title}</h1>
-            <div className="product-meta">
-              <span className="category">{category.name}</span>
-              <span className="divider">•</span>
-              <span className="subcategory">{subcategory.name}</span>
-            </div>
+        {/* Info */}
+        <div className="pd-info">
+          <h1 className="pd-title">{title}</h1>
+          <div className="pd-meta">
+            <span>{category.name}</span> • <span>{subcategory.name}</span>
           </div>
 
-          <div className="price-container">
-            <div className="price-wrapper">
-              <span className="final-price">₹{finalPrice}</span>
-              {discount > 0 && (
-                <span className="original-price">₹{price}</span>
-              )}
-            </div>
-            <div className="tax-info">Inclusive of all taxes</div>
+          <div className="pd-pricing">
+            <div className="pd-final">₹{finalPrice}</div>
+            {discount > 0 && <div className="pd-original">₹{price}</div>}
           </div>
+          <div className="pd-tax">Inclusive of all taxes</div>
 
-          <div className="variant-selector">
-            <div className="size-selector">
-              <h3>Select Size</h3>
-              <div className="size-grid">
-                {sizes.map(size => (
+          <div className="pd-variants">
+            <div className="pd-variant-group">
+              <div className="pd-variant-label">Size</div>
+              <div className="pd-sizes">
+                {sizes.map((sz) => (
                   <button
-                    key={size}
-                    className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                    onClick={() => setSelectedSize(size)}
+                    key={sz}
+                    className={`pd-size-btn ${selectedSize === sz ? 'active' : ''}`}
+                    onClick={() => setSelectedSize(sz)}
+                    aria-pressed={selectedSize === sz}
                   >
-                    {size}
+                    {sz}
                   </button>
                 ))}
               </div>
             </div>
-
-            <div className="color-selector">
-              <h3>Available Colors</h3>
-              <div className="color-grid">
-                {colors.map(color => (
-                  <div 
+            <div className="pd-variant-group">
+              <div className="pd-variant-label">Color</div>
+              <div className="pd-colors">
+                {colors.map((color) => (
+                  <div
                     key={color}
-                    className="color-swatch"
+                    className="pd-color-swatch"
                     style={{ backgroundColor: color }}
-                    title={color}
+                    aria-label={`Color: ${color}`}
                   />
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="quantity-selector">
-            <h3>Quantity</h3>
-            <div className="qty-controls">
-              <button onClick={() => handleQuantity('dec')}>−</button>
-              <span>{quantity}</span>
-              <button onClick={() => handleQuantity('inc')}>+</button>
+          <div className="pd-quantity">
+            <div className="pd-variant-label">Quantity</div>
+            <div className="pd-qty-controls">
+              <button onClick={() => adjustQty('down')} aria-label="Decrease quantity">
+                –
+              </button>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                min="1"
+                aria-label="Quantity"
+              />
+              <button onClick={() => adjustQty('up')} aria-label="Increase quantity">
+                +
+              </button>
             </div>
           </div>
 
-          <div className="action-buttons">
-            <button className="add-to-cart">Add to Cart</button>
-            <button className="buy-now">Buy Now</button>
+          <div className="pd-actions">
+            <button className="btn add-cart">Add to Cart</button>
+            <button className="btn buy-now">Buy Now</button>
           </div>
 
-          <div className="product-description">
+          <div className="pd-desc">
             <h3>Product Details</h3>
             <p>{description}</p>
           </div>
