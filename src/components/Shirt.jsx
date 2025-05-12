@@ -1,34 +1,33 @@
 // src/components/Shirt.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import '../styles/Jacket.css';     // or create a Shirt.css if you prefer
-import { fetchProducts }          from '../api/products';
-import { fetchCategories }        from '../api/categories';
+import '../styles/Jacket.css';      // or rename to shared CSS
+import { fetchProducts }           from '../api/products';
+import { fetchCategories }         from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Shirt() {
   const [shirtCatId, setShirtCatId] = useState('');
-  const [subs, setSubs]             = useState([]);    // Shirt subcategories
-  const [selSub, setSelSub]         = useState('');    // '' = All
+  const [subs, setSubs]             = useState([]);
+  const [selSub, setSelSub]         = useState('');
   const [items, setItems]           = useState([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState(null);
 
-  // 1) Load categories, find "Shirt", store its ID & subcats
+  // 1) Load “Shirt” category & subcategories
   useEffect(() => {
     (async () => {
       try {
         const { data: cats } = await fetchCategories();
-        // adjust the match if your DB uses 'shirt' or 'shirts'
         const shirtCat = cats.find(c => c.name.toLowerCase() === 'shirt');
         if (!shirtCat) throw new Error('Shirt category not found');
         setShirtCatId(shirtCat._id);
         setSubs(shirtCat.subcategories);
-        // initial load: All shirts
         await loadProducts(shirtCat._id, '');
       } catch (e) {
         console.error(e);
@@ -38,7 +37,7 @@ export default function Shirt() {
     })();
   }, []);
 
-  // 2) Fetch products filtered by category & optional subcategory
+  // 2) Fetch products by category & optional subcategory
   async function loadProducts(catId, subId) {
     setLoading(true);
     try {
@@ -52,7 +51,7 @@ export default function Shirt() {
     }
   }
 
-  // 3) Handler for filter buttons
+  // 3) Filter handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(shirtCatId, subId);
@@ -109,7 +108,8 @@ export default function Shirt() {
 
           return (
             <SwiperSlide key={prod._id}>
-              <div className="hd-card">
+              {/* Wrap each card in Link */}
+              <Link to={`/product/${prod._id}`} className="hd-card">
                 <div className="hd-image-wrap">
                   <img src={imgUrl} alt={prod.title} className="hd-image" />
                   <span className="hd-index">0{idx + 1}</span>
@@ -126,9 +126,8 @@ export default function Shirt() {
                       <strong>₹{prod.price}</strong>
                     )}
                   </p>
-                  <button className="hd-btn">Quick View</button>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

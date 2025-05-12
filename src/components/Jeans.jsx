@@ -1,24 +1,25 @@
 // src/components/Jeans.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import '../styles/Jacket.css';     // you can create Jeans.css if you’d like
-import { fetchProducts }          from '../api/products';
-import { fetchCategories }        from '../api/categories';
+import '../styles/Jacket.css';      // or Jeans.css if you prefer
+import { fetchProducts }           from '../api/products';
+import { fetchCategories }         from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Jeans() {
   const [jeansCatId, setJeansCatId] = useState('');
-  const [subs, setSubs]             = useState([]);    // subcategories under Jeans
-  const [selSub, setSelSub]         = useState('');    // '' => All
+  const [subs, setSubs]             = useState([]);
+  const [selSub, setSelSub]         = useState('');
   const [items, setItems]           = useState([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState(null);
 
-  // 1) On mount, load categories and find "Jeans"
+  // 1) Load “Jeans” category & subcategories
   useEffect(() => {
     (async () => {
       try {
@@ -27,7 +28,6 @@ export default function Jeans() {
         if (!jeansCat) throw new Error('Jeans category not found');
         setJeansCatId(jeansCat._id);
         setSubs(jeansCat.subcategories);
-        // initial load: all jeans
         await loadProducts(jeansCat._id, '');
       } catch (e) {
         console.error(e);
@@ -51,7 +51,7 @@ export default function Jeans() {
     }
   }
 
-  // 3) Handler for filter buttons
+  // 3) Filter handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(jeansCatId, subId);
@@ -108,7 +108,8 @@ export default function Jeans() {
 
           return (
             <SwiperSlide key={prod._id}>
-              <div className="hd-card">
+              {/* Wrap in Link to detail page */}
+              <Link to={`/product/${prod._id}`} className="hd-card">
                 <div className="hd-image-wrap">
                   <img src={imgUrl} alt={prod.title} className="hd-image" />
                   <span className="hd-index">0{idx + 1}</span>
@@ -125,9 +126,8 @@ export default function Jeans() {
                       <strong>₹{prod.price}</strong>
                     )}
                   </p>
-                  <button className="hd-btn">Quick View</button>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

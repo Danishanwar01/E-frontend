@@ -23,14 +23,14 @@ const Carousel = () => {
 
           <div className="btn-container">
             <Link 
-              to="/shop/mens" 
+              to="/all-products" 
               className="shop-btn men-btn"
             >
               SHOP MEN
               <span className="hover-bar"></span>
             </Link>
             <Link 
-              to="/shop/womens" 
+              to="/all-products" 
               className="shop-btn women-btn"
             >
               SHOP WOMEN

@@ -1,10 +1,11 @@
 // src/components/Trousers.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import '../styles/Jacket.css';      // or create a Trousers.css if you prefer
+import '../styles/Jacket.css';      // or Trousers.css if you prefer
 import { fetchProducts }           from '../api/products';
 import { fetchCategories }         from '../api/categories';
 
@@ -12,13 +13,13 @@ SwiperCore.use([Navigation]);
 
 export default function Trousers() {
   const [trouserCatId, setTrouserCatId] = useState('');
-  const [subs, setSubs]                 = useState([]);    // Male/Female subcats
-  const [selSub, setSelSub]             = useState('');    // '' => All
+  const [subs, setSubs]                 = useState([]);
+  const [selSub, setSelSub]             = useState('');
   const [items, setItems]               = useState([]);
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState(null);
 
-  // 1) On mount: load categories, find "Trousers"
+  // 1) Load “Trousers” category & its subcategories
   useEffect(() => {
     (async () => {
       try {
@@ -27,7 +28,7 @@ export default function Trousers() {
         if (!trou) throw new Error('Trousers category not found');
         setTrouserCatId(trou._id);
         setSubs(trou.subcategories);
-        await loadProducts(trou._id, '');  // initial load = all
+        await loadProducts(trou._id, '');
       } catch (e) {
         console.error(e);
         setError(e.message);
@@ -36,7 +37,7 @@ export default function Trousers() {
     })();
   }, []);
 
-  // 2) Fetch products for category & optional subcategory
+  // 2) Fetch products by category & optional subcategory
   async function loadProducts(catId, subId) {
     setLoading(true);
     try {
@@ -50,7 +51,7 @@ export default function Trousers() {
     }
   }
 
-  // 3) When a filter button is clicked
+  // 3) Filter button handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(trouserCatId, subId);
@@ -102,12 +103,13 @@ export default function Trousers() {
             ? `http://localhost:5000${prod.images[0]}`
             : require('../assets/images/product-1.png');
           const finalPrice = prod.discount > 0
-            ? (prod.price * (1 - prod.discount / 100)).toFixed(2)
+            ? (prod.price * (1 - prod.discount/100)).toFixed(2)
             : prod.price.toFixed(2);
 
           return (
             <SwiperSlide key={prod._id}>
-              <div className="hd-card">
+              {/* Wrap in Link to detail page */}
+              <Link to={`/product/${prod._id}`} className="hd-card">
                 <div className="hd-image-wrap">
                   <img src={imgUrl} alt={prod.title} className="hd-image" />
                   <span className="hd-index">0{idx + 1}</span>
@@ -124,9 +126,8 @@ export default function Trousers() {
                       <strong>₹{prod.price}</strong>
                     )}
                   </p>
-                  <button className="hd-btn">Quick View</button>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

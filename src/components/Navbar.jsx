@@ -1,20 +1,20 @@
-// src/components/Navbar.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import userIcon from "../assets/images/user.svg";
-import cartIcon from "../assets/images/cart.svg";
-import searchIcon from "../assets/images/search.svg";
+import React, { useState, useEffect } from 'react';
+import { Link }                        from 'react-router-dom';
+import { fetchCategories }             from '../api/categories';
+import userIcon                        from "../assets/images/user.svg";
+import cartIcon                        from "../assets/images/cart.svg";
+import searchIcon                      from "../assets/images/search.svg";
 
 const styles = {
   customNavbar: {
-    position: 'relative',      
-    zIndex: 2000,               
+    position: 'relative',
+    zIndex: 2000,
     padding: '1rem 0',
     background: 'rgba(255, 255, 255, 0.95)',
     backdropFilter: 'blur(10px)',
     boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)',
     borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-    overflow: 'visible',       
+    overflow: 'visible',
   },
   brandText: {
     fontSize: '1.5rem',
@@ -32,13 +32,13 @@ const styles = {
   },
   dropdownMenu: {
     position: 'absolute',
-    top: '100%',                
+    top: '100%',
     left: 0,
-    zIndex: 2001,              
+    zIndex: 2001,
     border: 'none',
     boxShadow: '0 5px 15px rgba(0, 0, 0, 0.08)',
     marginTop: '0.5rem',
-    background: '#fff',         
+    background: '#fff',
     minWidth: '12rem',
   },
   dropdownItem: {
@@ -81,137 +81,129 @@ const styles = {
   },
 };
 
-const Navbar = () => (
-  <nav className="navbar navbar-expand-lg" style={styles.customNavbar}>
-    <div className="container">
-      <Link to="/" style={styles.brandText}>
-        <span>Raah</span>
-      </Link>
+export default function Navbar() {
+  const [cats, setCats] = useState([]);
 
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarContent"
-        style={styles.navbarToggler}
-      >
-        <span className="navbar-toggler-icon" />
-      </button>
+  useEffect(() => {
+    fetchCategories()
+      .then(res => setCats(res.data))
+      .catch(console.error);
+  }, []);
 
-      <div className="collapse navbar-collapse" id="navbarContent">
-        <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-          <li className="nav-item">
-            <Link to="/" style={styles.navLink}>
-              Home
-            </Link>
-          </li>
+  return (
+    <nav className="navbar navbar-expand-lg" style={styles.customNavbar}>
+      <div className="container">
+        <Link to="/" style={styles.brandText}>Raah</Link>
 
-          {/** Shop Dropdown **/}
-          <li className="nav-item dropdown">
-            <a
-              href="#!"
-              className="nav-link dropdown-toggle"
-              role="button"
-              data-bs-toggle="dropdown"
-              style={styles.navLink}
-            >
-              Shop
-            </a>
-            <ul className="dropdown-menu" style={styles.dropdownMenu}>
-              <li>
-                <Link to="/shop/all" style={styles.dropdownItem}>
-                  All
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop/mens" style={styles.dropdownItem}>
-                  Mens
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop/womens" style={styles.dropdownItem}>
-                  Womens
-                </Link>
-              </li>
-            </ul>
-          </li>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          style={styles.navbarToggler}
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
 
-          {/** Category Dropdown **/}
-          <li className="nav-item dropdown">
-            <a
-              href="#!"
-              className="nav-link dropdown-toggle"
-              role="button"
-              data-bs-toggle="dropdown"
-              style={styles.navLink}
-            >
-              Category
-            </a>
-            <ul className="dropdown-menu" style={styles.dropdownMenu}>
-              {[
-                'Hoodies','Jacket','Night Wear',
-                'Shorts','T-shirt','Trouser',
-                'Jeans','Shirts'
-              ].map(cat => (
-                <li key={cat}>
-                  <Link
-                    to={`/category/${cat.toLowerCase().replace(/\s+/g,'-')}`}
-                    style={styles.dropdownItem}
-                  >
-                    {cat}
+        <div className="collapse navbar-collapse" id="navbarContent">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+            <li className="nav-item">
+              <Link to="/" style={styles.navLink}>Home</Link>
+            </li>
+
+            {/* Shop (Gender) */}
+            <li className="nav-item dropdown">
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                role="button"
+                data-bs-toggle="dropdown"
+                style={styles.navLink}
+              >
+                Shop
+              </a>
+              <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                <li>
+                  <Link to="/all-products" style={styles.dropdownItem}>All</Link>
+                </li>
+                <li>
+                  <Link to="/all-products?gender=Men" style={styles.dropdownItem}>
+                    Men
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </li>
+                <li>
+                  <Link to="/all-products?gender=Women" style={styles.dropdownItem}>
+                    Women
+                  </Link>
+                </li>
+              </ul>
+            </li>
 
-          {/** About Dropdown **/}
-          <li className="nav-item dropdown">
-            <a
-              href="#!"
-              className="nav-link dropdown-toggle"
-              role="button"
-              data-bs-toggle="dropdown"
-              style={styles.navLink}
-            >
-              About
-            </a>
-            <ul className="dropdown-menu" style={styles.dropdownMenu}>
-              <li>
-                <Link to="/services" style={styles.dropdownItem}>
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" style={styles.dropdownItem}>
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" style={styles.dropdownItem}>
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </li>
+            {/* Category */}
+            <li className="nav-item dropdown">
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                role="button"
+                data-bs-toggle="dropdown"
+                style={styles.navLink}
+              >
+                Category
+              </a>
+              <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                {cats.map(cat => (
+                  <li key={cat._id}>
+                    <Link
+                      to={`/all-products?category=${cat._id}`}
+                      style={styles.dropdownItem}
+                    >
+                      {cat.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
 
-          {/** Icons **/}
-          <li className="d-flex align-items-center ms-lg-4">
-            <Link to="/search" style={styles.iconLink}>
-              <img src={searchIcon} alt="Search" style={styles.navIcon} />
-            </Link>
-            <Link to="/profile" className="ms-3" style={styles.iconLink}>
-              <img src={userIcon} alt="User" style={styles.navIcon} />
-            </Link>
-            <Link to="/cart" className="ms-3 position-relative" style={styles.iconLink}>
-              <img src={cartIcon} alt="Cart" style={styles.navIcon} />
-              <span style={styles.cartBadge}>3</span>
-            </Link>
-          </li>
-        </ul>
+            {/* About */}
+            <li className="nav-item dropdown">
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                role="button"
+                data-bs-toggle="dropdown"
+                style={styles.navLink}
+              >
+                About
+              </a>
+              <ul className="dropdown-menu" style={styles.dropdownMenu}>
+                <li>
+                  <Link to="/services" style={styles.dropdownItem}>Services</Link>
+                </li>
+                <li>
+                  <Link to="/blog" style={styles.dropdownItem}>Blog</Link>
+                </li>
+                <li>
+                  <Link to="/contact" style={styles.dropdownItem}>Contact</Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* Icons */}
+            <li className="d-flex align-items-center ms-lg-4">
+              <Link to="/search" style={styles.iconLink}>
+                <img src={searchIcon} alt="Search" style={styles.navIcon} />
+              </Link>
+              <Link to="/profile" className="ms-3" style={styles.iconLink}>
+                <img src={userIcon} alt="User" style={styles.navIcon} />
+              </Link>
+              <Link to="/cart" className="ms-3 position-relative" style={styles.iconLink}>
+                <img src={cartIcon} alt="Cart" style={styles.navIcon} />
+                <span style={styles.cartBadge}>3</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-);
-
-export default Navbar;
+    </nav>
+  );
+}

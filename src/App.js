@@ -11,6 +11,8 @@ import Contact from './components/Contact';
 import Cart from './components/Cart';
 import User from './components/User';
 import Footer from './components/Footer';
+import AllProductsPage from './components/AllProducts';
+import ProductDetail from './components/ProductDetail';
 
 
 
@@ -28,6 +30,9 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/profile" element={<User/>} />
         <Route path="/cart" element={<Cart />} />  
+        <Route path="/all-products" element={<AllProductsPage />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+
       </Routes>
       <Footer/>
     </Router>

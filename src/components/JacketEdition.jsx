@@ -22,11 +22,11 @@ const JacketEdition = () => (
         </div>
 
         <div className="je-buttons">
-          <Link to="/shop/mens-jackets" className="je-btn">
+          <Link to="/all-products" className="je-btn">
             <span className="je-btn-text">Explore Mens</span>
             <div className="je-btn-hover"></div>
           </Link>
-          <Link to="/shop/womens-jackets" className="je-btn">
+          <Link to="/all-products" className="je-btn">
             <span className="je-btn-text">Discover Womens</span>
             <div className="je-btn-hover"></div>
           </Link>

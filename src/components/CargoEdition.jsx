@@ -22,11 +22,11 @@ const CargoEdition = () => (
         </div>
 
         <div className="je-buttons">
-          <Link to="/shop/mens-cargos" className="je-btn">
+          <Link to="/all-products" className="je-btn">
             <span className="je-btn-text">Explore Mens</span>
             <div className="je-btn-hover"></div>
           </Link>
-          <Link to="/shop/womens-cargos" className="je-btn">
+          <Link to="/all-products" className="je-btn">
             <span className="je-btn-text">Discover Womens</span>
             <div className="je-btn-hover"></div>
           </Link>

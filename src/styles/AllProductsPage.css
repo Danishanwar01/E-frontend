@@ -1,0 +1,147 @@
+:root {
+  --primary-color: #2d3436;
+  --accent-color:  #e74c3c;
+  --light-bg:      #f8f9fa;
+  --border-color:  #e0e0e0;
+  --text-light:    #666;
+}
+
+.all-products-page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  background: var(--light-bg);
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  font-size: 2.75rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.product-count {
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.layout-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+}
+
+.filters-sidebar {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 1rem;
+}
+
+.products-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-controls {
+  margin-bottom: 2rem;
+  text-align: right;
+}
+
+.sort-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: white;
+  font-size: 0.95rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 0;
+  color: var(--text-light);
+}
+
+/* FilterSection */
+.filter-section {
+  margin-bottom: 2rem;
+}
+
+.filter-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Checkbox filters */
+.filter-option {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+}
+
+.filter-option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.filter-option:hover input ~ .checkmark {
+  border-color: var(--primary-color);
+}
+
+.filter-option input:checked ~ .checkmark {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Size pills */
+.size-option .size-label {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.size-option input:checked ~ .size-label {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout-container { grid-template-columns: 1fr; }
+  .filters-sidebar {
+    position: static;
+    margin-bottom: 2rem;
+  }
+  .page-header h1 { font-size: 2rem; }
+}

@@ -1,33 +1,33 @@
 // src/components/Tshirt.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import '../styles/Jacket.css';     // reuse your jacket/hoodie CSS, or create Tshirt.css 
-import { fetchProducts }          from '../api/products';
-import { fetchCategories }        from '../api/categories';
+import '../styles/Jacket.css';      // or rename to shared CSS
+import { fetchProducts }           from '../api/products';
+import { fetchCategories }         from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Tshirt() {
   const [tsCatId, setTsCatId] = useState('');
-  const [subs, setSubs]       = useState([]);    // T‑Shirt subcategories
-  const [selSub, setSelSub]   = useState('');    // '' = All
+  const [subs, setSubs]       = useState([]);
+  const [selSub, setSelSub]   = useState('');
   const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
 
-  // 1) Load categories → find “T-Shirt” → store its ID & subcats
+  // 1) Load “T-Shirt” category + subcats
   useEffect(() => {
     (async () => {
       try {
         const { data: cats } = await fetchCategories();
         const tsh = cats.find(c => c.name.toLowerCase() === 't-shirt');
-        if (!tsh) throw new Error('T‑Shirt category not found');
+        if (!tsh) throw new Error('T-Shirt category not found');
         setTsCatId(tsh._id);
         setSubs(tsh.subcategories);
-        // initial load = all T‑shirts
         await loadProducts(tsh._id, '');
       } catch (e) {
         console.error(e);
@@ -45,26 +45,26 @@ export default function Tshirt() {
       setItems(data);
     } catch (e) {
       console.error(e);
-      setError('Failed to load T‑shirts');
+      setError('Failed to load T-shirts');
     } finally {
       setLoading(false);
     }
   }
 
-  // 3) Handler for “All / Men / Women” buttons
+  // 3) Filter handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(tsCatId, subId);
   };
 
-  if (loading) return <p className="text-center">Loading T‑shirts…</p>;
+  if (loading) return <p className="text-center">Loading T-shirts…</p>;
   if (error)   return <p className="text-center text-danger">{error}</p>;
 
   return (
     <section className="hd-section">
       <div className="hd-header">
         <div className="hd-title-wrap">
-          <h2 className="hd-title">T‑SHIRTS</h2>
+          <h2 className="hd-title">T-SHIRTS</h2>
           <div className="hd-underline" />
         </div>
         <div className="hd-filters">
@@ -109,7 +109,8 @@ export default function Tshirt() {
 
           return (
             <SwiperSlide key={prod._id}>
-              <div className="hd-card">
+              {/* Wrap your card in Link */}
+              <Link to={`/product/${prod._id}`} className="hd-card">
                 <div className="hd-image-wrap">
                   <img src={imgUrl} alt={prod.title} className="hd-image" />
                   <span className="hd-index">0{idx + 1}</span>
@@ -126,9 +127,8 @@ export default function Tshirt() {
                       <strong>₹{prod.price}</strong>
                     )}
                   </p>
-                  <button className="hd-btn">Quick View</button>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

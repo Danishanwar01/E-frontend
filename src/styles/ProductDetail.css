@@ -1,0 +1,261 @@
+/* ProductDetail.css */
+:root {
+  --primary: #2d3436;
+  --accent: #e74c3c;
+  --light-bg: #f8f9fa;
+  --border: #e0e0e0;
+}
+
+.product-detail {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: var(--light-bg);
+  border-radius: 4px;
+}
+
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+.gallery-section {
+  position: sticky;
+  top: 1rem;
+}
+
+.main-image {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-hero {
+  width: 100%;
+  height: 600px;
+  object-fit: contain;
+  background: var(--light-bg);
+}
+
+.discount-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.thumbnail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.thumbnail.active {
+  border-color: var(--primary);
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.info-section {
+  padding: 0 2rem;
+}
+
+.product-header h1 {
+  font-size: 2.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+}
+
+.product-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.price-container {
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.final-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 1rem;
+}
+
+.original-price {
+  font-size: 1.25rem;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.tax-info {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.variant-selector h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.size-btn {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.size-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.color-grid {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.quantity-selector {
+  margin: 2rem 0;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.qty-controls button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.add-to-cart, .buy-now {
+  flex: 1;
+  padding: 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.add-to-cart {
+  background: var(--primary);
+  color: white;
+}
+
+.buy-now {
+  background: var(--accent);
+  color: white;
+}
+
+.action-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+.product-description h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.product-description p {
+  line-height: 1.6;
+  color: #444;
+}
+
+@media (max-width: 768px) {
+  .product-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .gallery-section {
+    position: static;
+  }
+  
+  .product-hero {
+    height: 400px;
+  }
+  
+  .info-section {
+    padding: 0;
+  }
+}

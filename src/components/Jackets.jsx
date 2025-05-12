@@ -1,24 +1,24 @@
-// src/components/Jackets.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/Jacket.css';
-import { fetchProducts }          from '../api/products';
-import { fetchCategories }        from '../api/categories';
+import { fetchProducts }           from '../api/products';
+import { fetchCategories }         from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Jackets() {
   const [jackCatId, setJackCatId] = useState('');
-  const [subs, setSubs]           = useState([]);    // Jackets subcategories
-  const [selSub, setSelSub]       = useState('');    // '' = All
+  const [subs, setSubs]           = useState([]);    
+  const [selSub, setSelSub]       = useState('');    
   const [jackets, setJackets]     = useState([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState(null);
 
-  // 1) Load categories, find “Jackets”, store its ID & subcats
+  // 1) Load “Jackets” category & its subcategories
   useEffect(() => {
     (async () => {
       try {
@@ -27,8 +27,7 @@ export default function Jackets() {
         if (!jack) throw new Error('Jackets category not found');
         setJackCatId(jack._id);
         setSubs(jack.subcategories);
-        // initial load: all jackets
-        await loadProducts(jack._id, '');
+        await loadProducts(jack._id, '');  // initial load: All
       } catch (e) {
         console.error(e);
         setError(e.message);
@@ -37,7 +36,7 @@ export default function Jackets() {
     })();
   }, []);
 
-  // 2) Fetch products filtered by category & optional subcategory
+  // 2) Fetch products for this category (and optional subcategory)
   async function loadProducts(catId, subId) {
     setLoading(true);
     try {
@@ -51,7 +50,7 @@ export default function Jackets() {
     }
   }
 
-  // 3) Handler for filter buttons
+  // 3) Filter button handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(jackCatId, subId);
@@ -108,7 +107,8 @@ export default function Jackets() {
 
           return (
             <SwiperSlide key={prod._id}>
-              <div className="hd-card">
+              {/* Wrap entire card in Link to /product/:id */}
+              <Link to={`/product/${prod._id}`} className="hd-card">
                 <div className="hd-image-wrap">
                   <img src={imgUrl} alt={prod.title} className="hd-image" />
                   <span className="hd-index">0{idx + 1}</span>
@@ -125,9 +125,8 @@ export default function Jackets() {
                       <strong>₹{prod.price}</strong>
                     )}
                   </p>
-                  <button className="hd-btn">Quick View</button>
                 </div>
-              </div>
+              </Link>
             </SwiperSlide>
           );
         })}

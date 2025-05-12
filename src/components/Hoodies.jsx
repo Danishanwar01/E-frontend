@@ -1,24 +1,24 @@
-// src/components/Hoodies.jsx
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide }   from 'swiper/react';
-import SwiperCore, { Navigation } from 'swiper';
+import { Link }                    from 'react-router-dom';
+import { Swiper, SwiperSlide }     from 'swiper/react';
+import SwiperCore, { Navigation }  from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import '../styles/Hoodies.css';
-import { fetchProducts }          from '../api/products';
-import { fetchCategories }        from '../api/categories';
+import { fetchProducts }           from '../api/products';
+import { fetchCategories}         from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Hoodies() {
   const [hoodCatId, setHoodCatId] = useState('');
-  const [subs, setSubs]           = useState([]);    // Hoodies subcategories
+  const [subs, setSubs]           = useState([]);    
   const [selSub, setSelSub]       = useState('');    
   const [hoodies, setHoodies]     = useState([]);
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState(null);
 
-  // 1) Load categories, find "Hoodies", store its ID & subcategories
+  // 1) Load “Hoodies” category + subcategories
   useEffect(() => {
     (async () => {
       try {
@@ -27,7 +27,7 @@ export default function Hoodies() {
         if (!hood) throw new Error('Hoodies category not found');
         setHoodCatId(hood._id);
         setSubs(hood.subcategories);
-        await loadProducts(hood._id, '');  // initial load: All
+        await loadProducts(hood._id, '');
       } catch (e) {
         console.error(e);
         setError(e.message);
@@ -36,21 +36,20 @@ export default function Hoodies() {
     })();
   }, []);
 
-  // 2) Fetch products filtered by category & optional subcategory
+  // 2) Fetch hoodies (filtered by subcategory if provided)
   async function loadProducts(categoryId, subId) {
     setLoading(true);
     try {
       const { data } = await fetchProducts({ category: categoryId, subcategory: subId });
       setHoodies(data);
-    } catch (e) {
-      console.error(e);
-      setError('Failed to load products');
+    } catch {
+      setError('Failed to load hoodies');
     } finally {
       setLoading(false);
     }
   }
 
-  // 3) Handler for filter buttons (All / Men / Female)
+  // 3) Sub-filter handler
   const onFilterClick = subId => {
     setSelSub(subId);
     loadProducts(hoodCatId, subId);
@@ -101,35 +100,32 @@ export default function Hoodies() {
           const imgUrl = prod.images?.[0]
             ? `http://localhost:5000${prod.images[0]}`
             : require('../assets/images/product-1.png');
-
           const finalPrice = prod.discount > 0
-            ? (prod.price * (1 - prod.discount / 100)).toFixed(2)
+            ? (prod.price * (1 - prod.discount/100)).toFixed(2)
             : prod.price.toFixed(2);
 
           return (
             <SwiperSlide key={prod._id}>
-            <div className="product-card">
-              <div className="image-container">
-                <img src={imgUrl} alt={prod.title} className="product-image" />
-                <span className="product-number">0{idx + 1}</span>
-              </div>
-              <div className="product-details">
-                <h3 className="product-title">{prod.title}</h3>
-                <p className="product-price">
-                  {prod.discount > 0 ? (
-                    <>
-                      <del>₹{prod.price}</del>{' '}
-                      <strong>₹{finalPrice}</strong>
-                    </>
-                  ) : (
-                    <strong>₹{prod.price}</strong>
-                  )}
-                </p>
-                <button className="quick-view-btn">Quick View</button>
-              </div>
-            </div>
-          </SwiperSlide>
-          
+              {/* 1) Wrap entire card in a Link to /product/:id */}
+              <Link to={`/product/${prod._id}`} className="product-card">
+                <div className="image-container">
+                  <img src={imgUrl} alt={prod.title} className="product-image" />
+                  <span className="product-number">0{idx + 1}</span>
+                </div>
+                <div className="product-details">
+                  <h3 className="product-title">{prod.title}</h3>
+                  <p className="product-price">
+                    {prod.discount > 0
+                      ? <>
+                          <del>₹{prod.price}</del>{' '}
+                          <strong>₹{finalPrice}</strong>
+                        </>
+                      : <strong>₹{prod.price}</strong>
+                    }
+                  </p>
+                </div>
+              </Link>
+            </SwiperSlide>
           );
         })}
       </Swiper>
