@@ -13,6 +13,7 @@ import User from './components/User';
 import Footer from './components/Footer';
 import AllProductsPage from './components/AllProducts';
 import ProductDetail from './components/ProductDetail';
+import Checkout from './components/Checkout';
 
 
 
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />  
         <Route path="/all-products" element={<AllProductsPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/checkout" element={<Checkout />} />  
 
       </Routes>
       <Footer/>

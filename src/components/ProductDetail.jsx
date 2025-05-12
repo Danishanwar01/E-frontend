@@ -12,18 +12,52 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   useEffect(() => {
     fetchProductById(id)
       .then((r) => {
         setProduct(r.data);
         setSelectedSize(r.data.sizes[0] || '');
+        setSelectedColor(r.data.colors[0] || '');
       })
       .catch(() => setError('Product not found'))
       .finally(() => setLoading(false));
   }, [id]);
 
-  const adjustQty = (dir) => setQuantity((q) => Math.max(1, dir === 'up' ? q + 1 : q - 1));
+  const adjustQty = (dir) =>
+    setQuantity((q) => Math.max(1, dir === 'up' ? q + 1 : q - 1));
+
+  const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      alert('Please select size and color');
+      return;
+    }
+
+    const cartItem = {
+      productId: id,
+      qty: quantity,
+      size: selectedSize,
+      color: selectedColor,
+    };
+
+    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingIndex = existingCart.findIndex(
+      (item) =>
+        item.productId === cartItem.productId &&
+        item.size === cartItem.size &&
+        item.color === cartItem.color
+    );
+
+    if (existingIndex >= 0) {
+      existingCart[existingIndex].qty += cartItem.qty;
+    } else {
+      existingCart.push(cartItem);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(existingCart));
+    alert('Product added to cart!');
+  };
 
   if (loading) {
     return (
@@ -44,8 +78,19 @@ export default function ProductDetail() {
     );
   }
 
-  const { title, description, price, discount, colors, sizes, images, category, subcategory } = product;
-  const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price;
+  const {
+    title,
+    description,
+    price,
+    discount,
+    colors,
+    sizes,
+    images,
+    category,
+    subcategory,
+  } = product;
+  const finalPrice =
+    discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price;
 
   return (
     <div className="pd-container">
@@ -54,10 +99,12 @@ export default function ProductDetail() {
       </button>
 
       <div className="pd-grid">
-        {/* Gallery */}
         <div className="pd-gallery">
           <div className="pd-main-img">
-            <img src={`http://localhost:5000${images[selectedImage]}`} alt={`${title} - Main view`} />
+            <img
+              src={`http://localhost:5000${images[selectedImage]}`}
+              alt={`${title} - Main view`}
+            />
             {discount > 0 && <div className="pd-discount">-{discount}%</div>}
           </div>
           <div className="pd-thumbs">
@@ -68,13 +115,15 @@ export default function ProductDetail() {
                 onClick={() => setSelectedImage(i)}
                 aria-label={`View image ${i + 1} of ${title}`}
               >
-                <img src={`http://localhost:5000${img}`} alt={`${title} - Thumbnail ${i + 1}`} />
+                <img
+                  src={`http://localhost:5000${img}`}
+                  alt={`${title} - Thumbnail ${i + 1}`}
+                />
               </button>
             ))}
           </div>
         </div>
 
-        {/* Info */}
         <div className="pd-info">
           <h1 className="pd-title">{title}</h1>
           <div className="pd-meta">
@@ -109,8 +158,11 @@ export default function ProductDetail() {
                 {colors.map((color) => (
                   <div
                     key={color}
-                    className="pd-color-swatch"
+                    className={`pd-color-swatch ${
+                      selectedColor === color ? 'active' : ''
+                    }`}
                     style={{ backgroundColor: color }}
+                    onClick={() => setSelectedColor(color)}
                     aria-label={`Color: ${color}`}
                   />
                 ))}
@@ -138,7 +190,9 @@ export default function ProductDetail() {
           </div>
 
           <div className="pd-actions">
-            <button className="btn add-cart">Add to Cart</button>
+            <button className="btn add-cart" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
             <button className="btn buy-now">Buy Now</button>
           </div>
 
