@@ -1,10 +1,8 @@
-/* Navbar.jsx */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchCategories } from '../api/categories';
 import userIcon from '../assets/images/user.svg';
 import cartIcon from '../assets/images/cart.svg';
-import searchIcon from '../assets/images/search.svg';
 
 const styles = {
   customNavbar: {
@@ -83,8 +81,29 @@ const styles = {
 };
 
 export default function Navbar() {
+  const [user, setUser] = useState(null);
   const [cats, setCats] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
+
+  // Load user from localStorage
+  useEffect(() => {
+    const syncUser = () => {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        try {
+          setUser(JSON.parse(stored));
+        } catch {
+          localStorage.removeItem('user');
+        }
+      } else {
+        setUser(null);
+      }
+    };
+    syncUser();
+    window.addEventListener('storage', syncUser);
+    return () => window.removeEventListener('storage', syncUser);
+  }, []);
 
   // Fetch categories
   useEffect(() => {
@@ -93,22 +112,30 @@ export default function Navbar() {
       .catch(console.error);
   }, []);
 
-  // Update cart count from localStorage
-  const updateCartCount = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('cart')) || [];
-      const totalQty = stored.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
-      setCartCount(totalQty);
-    } catch {
-      setCartCount(0);
-    }
-  };
-
+  // Update cart count
   useEffect(() => {
+    const updateCartCount = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalQty = stored.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+        setCartCount(totalQty);
+      } catch {
+        setCartCount(0);
+      }
+    };
+
     updateCartCount();
     window.addEventListener('storage', updateCartCount);
     return () => window.removeEventListener('storage', updateCartCount);
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    window.dispatchEvent(new Event('storage'));
+    navigate('/login');
+  };
 
   return (
     <nav className="navbar navbar-expand-lg" style={styles.customNavbar}>
@@ -127,55 +154,51 @@ export default function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-            {/* Home */}
-            <li className="nav-item">
-              <Link to="/" style={styles.navLink}>Home</Link>
-            </li>
-            {/* Shop */}
+            <li className="nav-item"><Link to="/" style={styles.navLink}>Home</Link></li>
+
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" style={styles.navLink}>
-                Shop
-              </a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>Shop</a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 <li><Link to="/all-products" style={styles.dropdownItem}>All</Link></li>
                 <li><Link to="/all-products?gender=Men" style={styles.dropdownItem}>Men</Link></li>
                 <li><Link to="/all-products?gender=Women" style={styles.dropdownItem}>Women</Link></li>
               </ul>
             </li>
-            {/* Category */}
+
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" style={styles.navLink}>
-                Category
-              </a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>Category</a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 {cats.map(cat => (
                   <li key={cat._id}>
-                    <Link to={`/all-products?category=${cat._id}`} style={styles.dropdownItem}>
-                      {cat.name}
-                    </Link>
+                    <Link to={`/all-products?category=${cat._id}`} style={styles.dropdownItem}>{cat.name}</Link>
                   </li>
                 ))}
               </ul>
             </li>
-            {/* About */}
+
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" style={styles.navLink}>
-                About
-              </a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>About</a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 <li><Link to="/services" style={styles.dropdownItem}>Services</Link></li>
                 <li><Link to="/blog" style={styles.dropdownItem}>Blog</Link></li>
                 <li><Link to="/contact" style={styles.dropdownItem}>Contact</Link></li>
               </ul>
             </li>
-            {/* Icons */}
+
+            {/* Icons Section */}
             <li className="d-flex align-items-center ms-lg-4">
-              {/* <Link to="/search" style={styles.iconLink}>
-                <img src={searchIcon} alt="Search" style={styles.navIcon} />
-              </Link> */}
-              <Link to="/profile" className="ms-3" style={styles.iconLink}>
-                <img src={userIcon} alt="User" style={styles.navIcon} />
-              </Link>
+              {/* Conditional user icon */}
+          {user ? (
+  <Link to={`/profile/${user.id}`} className="ms-3" style={styles.iconLink} title={`Hello, ${user.name}`}>
+    <img src={userIcon} alt="Profile" style={styles.navIcon} />
+  </Link>
+) : (
+  <Link to="/login" className="ms-3" style={styles.iconLink} title="Login">
+    <img src={userIcon} alt="Login" style={styles.navIcon} />
+  </Link>
+)}
+
+
               <Link to="/cart" className="ms-3 position-relative" style={styles.iconLink}>
                 <img src={cartIcon} alt="Cart" style={styles.navIcon} />
                 {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}

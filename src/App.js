@@ -14,6 +14,10 @@ import Footer from './components/Footer';
 import AllProductsPage from './components/AllProducts';
 import ProductDetail from './components/ProductDetail';
 import Checkout from './components/Checkout';
+import { Login } from './components/Login';
+import { Signup } from './components/Signup';
+import Profile from './components/Profile';
+
 
 
 
@@ -33,7 +37,12 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />  
         <Route path="/all-products" element={<AllProductsPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/checkout" element={<Checkout />} />  
+        <Route path="/checkout" element={<Checkout />} /> 
+        <Route path= "/login" element={<Login/>} />
+        <Route path="/signup" element={<Signup/>} />
+       <Route path="/profile/:id" element={<Profile />} />
+
+
 
       </Routes>
       <Footer/>
