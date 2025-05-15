@@ -1,8 +1,9 @@
+// src/components/NavBar.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { fetchCategories } from '../api/categories';
-import userIcon from '../assets/images/user.svg';
-import cartIcon from '../assets/images/cart.svg';
+import { Link }                from 'react-router-dom';
+import { fetchCategories }     from '../api/categories';
+import userIcon                from '../assets/images/user.svg';
+import cartIcon                from '../assets/images/cart.svg';
 
 const styles = {
   customNavbar: {
@@ -81,12 +82,11 @@ const styles = {
 };
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
-  const [cats, setCats] = useState([]);
+  const [user,      setUser]      = useState(null);
+  const [cats,      setCats]      = useState([]);
   const [cartCount, setCartCount] = useState(0);
-  const navigate = useNavigate();
 
-  // Load user from localStorage
+  // Sync user
   useEffect(() => {
     const syncUser = () => {
       const stored = localStorage.getItem('user');
@@ -95,6 +95,7 @@ export default function Navbar() {
           setUser(JSON.parse(stored));
         } catch {
           localStorage.removeItem('user');
+          setUser(null);
         }
       } else {
         setUser(null);
@@ -112,36 +113,31 @@ export default function Navbar() {
       .catch(console.error);
   }, []);
 
-  // Update cart count
+  // Cart count (server if logged in, else local)
   useEffect(() => {
-    const updateCartCount = () => {
-      try {
-        const stored = JSON.parse(localStorage.getItem('cart')) || [];
-        const totalQty = stored.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
-        setCartCount(totalQty);
-      } catch {
-        setCartCount(0);
+    async function loadCount() {
+      if (user?.id) {
+        try {
+          const res   = await fetch(`http://localhost:5000/api/cart/${user.id}`);
+          const items = await res.json();
+          setCartCount(items.reduce((sum, i) => sum + (i.qty || 0), 0));
+          return;
+        } catch {
+          // fallback
+        }
       }
-    };
-
-    updateCartCount();
-    window.addEventListener('storage', updateCartCount);
-    return () => window.removeEventListener('storage', updateCartCount);
-  }, []);
-
-  // Logout function
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    window.dispatchEvent(new Event('storage'));
-    navigate('/login');
-  };
+      const stored = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartCount(stored.reduce((sum, i) => sum + (i.qty || 0), 0));
+    }
+    loadCount();
+    window.addEventListener('storage', loadCount);
+    return () => window.removeEventListener('storage', loadCount);
+  }, [user]);
 
   return (
     <nav className="navbar navbar-expand-lg" style={styles.customNavbar}>
       <div className="container">
         <Link to="/" style={styles.brandText}>Raah</Link>
-
         <button
           className="navbar-toggler"
           type="button"
@@ -154,10 +150,14 @@ export default function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-            <li className="nav-item"><Link to="/" style={styles.navLink}>Home</Link></li>
+            <li className="nav-item">
+              <Link to="/" style={styles.navLink}>Home</Link>
+            </li>
 
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>Shop</a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+                Shop
+              </a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 <li><Link to="/all-products" style={styles.dropdownItem}>All</Link></li>
                 <li><Link to="/all-products?gender=Men" style={styles.dropdownItem}>Men</Link></li>
@@ -166,38 +166,40 @@ export default function Navbar() {
             </li>
 
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>Category</a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+                Category
+              </a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 {cats.map(cat => (
                   <li key={cat._id}>
-                    <Link to={`/all-products?category=${cat._id}`} style={styles.dropdownItem}>{cat.name}</Link>
+                    <Link to={`/all-products?category=${cat._id}`} style={styles.dropdownItem}>
+                      {cat.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </li>
 
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>About</a>
+              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+                About
+              </a>
               <ul className="dropdown-menu" style={styles.dropdownMenu}>
                 <li><Link to="/services" style={styles.dropdownItem}>Services</Link></li>
-                <li><Link to="/blog" style={styles.dropdownItem}>Blog</Link></li>
-                <li><Link to="/contact" style={styles.dropdownItem}>Contact</Link></li>
+                <li><Link to="/blog"     style={styles.dropdownItem}>Blog</Link></li>
+                <li><Link to="/contact"  style={styles.dropdownItem}>Contact</Link></li>
               </ul>
             </li>
 
-            {/* Icons Section */}
             <li className="d-flex align-items-center ms-lg-4">
-              {/* Conditional user icon */}
-          {user ? (
-  <Link to={`/profile/${user.id}`} className="ms-3" style={styles.iconLink} title={`Hello, ${user.name}`}>
-    <img src={userIcon} alt="Profile" style={styles.navIcon} />
-  </Link>
-) : (
-  <Link to="/login" className="ms-3" style={styles.iconLink} title="Login">
-    <img src={userIcon} alt="Login" style={styles.navIcon} />
-  </Link>
-)}
-
+              <Link
+                to={user ? `/profile/${user.id}` : '/login'}
+                className="ms-3"
+                style={styles.iconLink}
+                title={user ? `Hello, ${user.name}` : 'Login'}
+              >
+                <img src={userIcon} alt="User" style={styles.navIcon} />
+              </Link>
 
               <Link to="/cart" className="ms-3 position-relative" style={styles.iconLink}>
                 <img src={cartIcon} alt="Cart" style={styles.navIcon} />
