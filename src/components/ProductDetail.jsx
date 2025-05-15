@@ -1,24 +1,27 @@
+// src/pages/ProductDetail.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { fetchProductById } from '../api/products';
+import { useParams, useNavigate }      from 'react-router-dom';
+import { fetchProductById }            from '../api/products';
 import '../styles/ProductDetail.css';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  const [product,       setProduct]       = useState(null);
+  const [loading,       setLoading]       = useState(true);
+  const [error,         setError]         = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState('');
+  const [quantity,      setQuantity]      = useState(1);
+  const [selectedSize,  setSelectedSize]  = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
+  // 1) Load product details
   useEffect(() => {
     fetchProductById(id)
       .then(r => {
         setProduct(r.data);
-        setSelectedSize(r.data.sizes[0] || '');
+        setSelectedSize(r.data.sizes[0]  || '');
         setSelectedColor(r.data.colors[0] || '');
       })
       .catch(() => setError('Product not found'))
@@ -28,29 +31,55 @@ export default function ProductDetail() {
   const adjustQty = dir =>
     setQuantity(q => Math.max(1, dir === 'up' ? q + 1 : q - 1));
 
-  const handleAddToCart = () => {
+  // 2) Add to cart (backend)
+  const handleAddToCart = async () => {
     if (!selectedSize || !selectedColor) {
       alert('Please select size and color');
       return;
     }
-    const cartItem = { productId: id, qty: quantity, size: selectedSize, color: selectedColor };
-    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-    const idx = existingCart.findIndex(
-      i => i.productId === cartItem.productId && i.size === cartItem.size && i.color === cartItem.color
+      // 0) ensure logged in
+   const user = JSON.parse(localStorage.getItem('user') || '{}');
+   if (!user.id) {
+     alert('Please login first to add items to your cart.');
+     navigate('/login');
+     return;
+   }
+   const cartItem = { productId: id, qty: quantity, size: selectedSize, color: selectedColor };
+
+    // fetch existing
+    const res1     = await fetch(`http://localhost:5000/api/cart/${user.id}`);
+    const existing = await res1.json();
+
+    // merge
+    const idx = existing.findIndex(i =>
+      i.productId === cartItem.productId &&
+      i.size      === cartItem.size &&
+      i.color     === cartItem.color
     );
-    if (idx >= 0) existingCart[idx].qty += cartItem.qty;
-    else existingCart.push(cartItem);
-    localStorage.setItem('cart', JSON.stringify(existingCart));
+    if (idx >= 0) existing[idx].qty += cartItem.qty;
+    else existing.push(cartItem);
+
+    // persist
+    await fetch(`http://localhost:5000/api/cart/${user.id}`, {
+      method:  'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ items: existing })
+    });
+
     alert('Product added to cart!');
   };
 
+  // 3) Buy Now: send only this item to checkout
   const handleBuyNow = () => {
-    if (!selectedSize || !selectedColor) {
-      alert('Please select size and color');
-      return;
-    }
-    const buyNowItem = { productId: id, qty: quantity, size: selectedSize, color: selectedColor };
-    navigate('/checkout', { state: [buyNowItem] });
+      // require login
+   const user = JSON.parse(localStorage.getItem('user') || '{}');
+   if (!user.id) {
+     alert('Please login first to purchase.');
+     navigate('/login');
+     return;
+   }
+   if (!selectedSize || !selectedColor) { /*...*/ }
+   navigate('/checkout', { state:[{ productId:id, qty:quantity, size:selectedSize, color:selectedColor }] });
   };
 
   if (loading) {
@@ -71,20 +100,32 @@ export default function ProductDetail() {
     );
   }
 
-  const { title, description, price, discount, colors, sizes, images, category, subcategory } = product;
-  const finalPrice = discount > 0 ? (price * (1 - discount / 100)).toFixed(2) : price;
+  const {
+    title, description, price, discount,
+    colors, sizes, images, category, subcategory
+  } = product;
+
+  const finalPrice = discount > 0
+    ? (price * (1 - discount / 100)).toFixed(2)
+    : price;
 
   return (
     <div className="pd-container">
-      <button className="pd-back" onClick={() => navigate(-1)}>← Continue Shopping</button>
+      <button className="pd-back" onClick={() => navigate(-1)}>
+        ← Continue Shopping
+      </button>
+
       <div className="pd-grid">
+        {/* Gallery */}
         <div className="pd-gallery">
           <div className="pd-main-img">
             <img
               src={`http://localhost:5000${images[selectedImage]}`}
-              alt={`${title} - Main view`}
+              alt={`${title} – Main view`}
             />
-            {discount > 0 && <div className="pd-discount">-{discount}%</div>}
+            {discount > 0 && (
+              <div className="pd-discount">-{discount}%</div>
+            )}
           </div>
           <div className="pd-thumbs">
             {images.map((img, i) => (
@@ -96,24 +137,29 @@ export default function ProductDetail() {
               >
                 <img
                   src={`http://localhost:5000${img}`}
-                  alt={`${title} - Thumbnail ${i + 1}`}
+                  alt={`${title} – Thumbnail ${i + 1}`}
                 />
               </button>
             ))}
           </div>
         </div>
 
+        {/* Info */}
         <div className="pd-info">
           <h1 className="pd-title">{title}</h1>
           <div className="pd-meta">
             <span>{category.name}</span> • <span>{subcategory.name}</span>
           </div>
+
           <div className="pd-pricing">
             <div className="pd-final">₹{finalPrice}</div>
-            {discount > 0 && <div className="pd-original">₹{price}</div>}
+            {discount > 0 && (
+              <div className="pd-original">₹{price}</div>
+            )}
           </div>
           <div className="pd-tax">Inclusive of all taxes</div>
 
+          {/* Variants */}
           <div className="pd-variants">
             <div className="pd-variant-group">
               <div className="pd-variant-label">Size</div>
@@ -146,6 +192,7 @@ export default function ProductDetail() {
             </div>
           </div>
 
+          {/* Quantity */}
           <div className="pd-quantity">
             <div className="pd-variant-label">Quantity</div>
             <div className="pd-qty-controls">
@@ -161,11 +208,17 @@ export default function ProductDetail() {
             </div>
           </div>
 
+          {/* Actions */}
           <div className="pd-actions">
-            <button className="btn add-cart" onClick={handleAddToCart}>Add to Cart</button>
-            <button className="btn buy-now" onClick={handleBuyNow}>Buy Now</button>
+            <button className="btn add-cart" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
+            <button className="btn buy-now" onClick={handleBuyNow}>
+              Buy Now
+            </button>
           </div>
 
+          {/* Description */}
           <div className="pd-desc">
             <h3>Product Details</h3>
             <p>{description}</p>
