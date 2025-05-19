@@ -112,7 +112,7 @@ export default function ProductDetail() {
   return (
     <div className="pd-container">
       <button className="pd-back" onClick={() => navigate(-1)}>
-        ← Continue Shopping
+        ← Back
       </button>
 
       <div className="pd-grid">
@@ -149,6 +149,12 @@ export default function ProductDetail() {
           <h1 className="pd-title">{title}</h1>
           <div className="pd-meta">
             <span>{category.name}</span> • <span>{subcategory.name}</span>
+          </div>
+
+           {/* Description */}
+          <div className="pd-desc">
+            <h3>Product Details</h3>
+            <p>{description}</p>
           </div>
 
           <div className="pd-pricing">
@@ -218,11 +224,7 @@ export default function ProductDetail() {
             </button>
           </div>
 
-          {/* Description */}
-          <div className="pd-desc">
-            <h3>Product Details</h3>
-            <p>{description}</p>
-          </div>
+         
         </div>
       </div>
     </div>

@@ -1,19 +1,24 @@
 :root {
-  --pd-bg: #fafafa;
+  --pd-bg: #fff;
   --pd-font: 'Helvetica Neue', Arial, sans-serif;
   --pd-primary: #1a1a1a;
   --pd-accent: #d62828;
   --pd-light: #fff;
-  --pd-border: #e2e2e2;
+  --pd-border: #fff;
+  
   --pd-radius: 8px;
 }
 
 .pd-container {
-  max-width: 1200px;
-  margin: 2rem auto;
+  max-width: 100%;
+  margin: 1rem auto;
+  margin-left: .5rem;
+  margin-right: .5rem;
   padding: 0 1.5rem;
-  font-family: var(--pd-font);
-  background: var(--pd-bg);
+background-color: #fff;
+border: 2px solid black;
+
+
 }
 
 /* Back Button */
@@ -25,6 +30,7 @@
   margin-bottom: 2rem;
   cursor: pointer;
   transition: color 0.2s;
+  margin-top: 1rem;
 }
 .pd-back:hover {
   color: var(--pd-accent);
@@ -41,13 +47,18 @@
 .pd-gallery {
   position: sticky;
   top: 2rem;
+  bottom: 2rem;
+  border: 2px solid black;
+  padding-left: 1rem;
+  padding-bottom: .5rem;
+  margin-bottom: 1rem;
 }
 .pd-main-img {
   position: relative;
   background: var(--pd-light);
   border-radius: var(--pd-radius);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  
 }
 .pd-main-img img {
   width: 100%;
@@ -61,7 +72,7 @@
   background: var(--pd-accent);
   color: white;
   padding: 0.5rem 0.8rem;
-  border-radius: 4px;
+  border-radius: 50%;
   font-weight: bold;
   font-size: 0.9rem;
 }
@@ -99,6 +110,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+ 
 }
 .pd-title {
   font-size: 2.2rem;
@@ -106,7 +118,7 @@
   margin: 0;
 }
 .pd-meta {
-  color: #777;
+  color: #000000;
   font-size: 0.95rem;
 }
 .pd-pricing {
@@ -118,15 +130,16 @@
   font-size: 2rem;
   font-weight: bold;
   color: var(--pd-accent);
+  
 }
 .pd-original {
   font-size: 1.1rem;
-  color: #999;
+  color: #000000;
   text-decoration: line-through;
 }
 .pd-tax {
   font-size: 0.85rem;
-  color: #999;
+  color: #000000;
 }
 
 /* Variants */
@@ -135,10 +148,13 @@
 }
 .pd-variant-group {
   margin-bottom: 1.5rem;
+ 
+
 }
 .pd-variant-label {
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #000000;
 }
 .pd-sizes,
 .pd-colors {
@@ -149,7 +165,7 @@
   padding: 0.6rem 1rem;
   border: 1px solid var(--pd-border);
   background: var(--pd-light);
-  border-radius: 4px;
+  border-radius: 50%;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, transform 0.2s;
 }
@@ -174,17 +190,23 @@
 
 /* Quantity Selector */
 .pd-quantity {
-  margin-top: 1.5rem;
+  margin-top: 0;
 }
 .pd-qty-controls {
-  display: flex;
+
+  display: inline-block;
   align-items: center;
+  border: 2px solid;
+  color: black;
+  overflow: hidden;
+  border-radius: 4px;
+ 
 }
 .pd-qty-controls button {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   background: var(--pd-light);
-  border: 1px solid var(--pd-border);
+  border: 2px solid var(--pd-border);
   font-size: 1.2rem;
   cursor: pointer;
   transition: background 0.2s;
@@ -193,8 +215,8 @@
   background: var(--pd-border);
 }
 .pd-qty-controls input {
-  width: 50px;
-  height: 36px;
+  width: 40px;
+  height: 31px;
   text-align: center;
   border: 1px solid var(--pd-border);
   border-left: none;
@@ -212,9 +234,11 @@
 }
 /* Action Buttons */
 .pd-actions {
-  margin-top: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   gap: 1rem;
+ 
 }
 .pd-actions .btn {
   flex: 1;
@@ -224,15 +248,19 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+ 
   transition: transform 0.2s, box-shadow 0.2s;
+  
 }
 .pd-actions .add-cart {
   background: var(--pd-primary);
   color: white;
+ 
 }
 .pd-actions .buy-now {
   background: var(--pd-accent);
   color: white;
+  background-color:rgb(182, 8, 8);
 }
 .pd-actions .btn:hover {
   transform: translateY(-2px);
@@ -241,7 +269,7 @@
 
 /* Description */
 .pd-desc h3 {
-  margin-top: 2rem;
+  margin-top: 0;
   font-size: 1.2rem;
   color: var(--pd-primary);
 }
@@ -249,6 +277,7 @@
   color: #555;
   line-height: 1.6;
   font-size: 1rem;
+  margin-top: 0;
 }
 
 /* Loading State */

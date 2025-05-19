@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import jacketImage from '../assets/images/jacket1.jpg';
+import jacketImage from '../assets/images/bjacket.png';
 import '../styles/JacketEdition.css';
 
 const JacketEdition = () => (

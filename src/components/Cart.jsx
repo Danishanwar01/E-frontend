@@ -105,9 +105,9 @@ export default function Cart() {
   return (
     <div className="cart-page">
       <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Continue Shopping
+        ← Back
       </button>
-      <h1 className="cart-title">Your Shopping Cart ({totalCount})</h1>
+      <h1 className="cart-title">Products in Cart {totalCount}</h1>
 
       {orderedItems.length === 0 ? (
         <div className="empty-cart">
@@ -154,27 +154,30 @@ export default function Cart() {
                         </div>
                       )}
                     </div>
-                    <div className="quantity-controls">
-                      <button
-                        className="qty-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          updateQty(productId, size, color, -1);
-                        }}
-                      >
-                        -
-                      </button>
-                      <span className="qty-text">{qty}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          updateQty(productId, size, color, 1);
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
+                   <div className="quantity-controls">
+  <button
+    className="qty-btn"
+    onClick={e => {
+      e.stopPropagation();
+      updateQty(productId, size, color, -1);
+    }}
+  >
+    −
+  </button>
+
+  <span className="qty-count">{qty}</span>
+
+  <button
+    className="qty-btn"
+    onClick={e => {
+      e.stopPropagation();
+      updateQty(productId, size, color, 1);
+    }}
+  >
+    +
+  </button>
+</div>
+
                     <button
                       className="remove-btn"
                       onClick={e => {
@@ -185,7 +188,7 @@ export default function Cart() {
                       Remove
                     </button>
                   </div>
-                  <div className="item-total">₹{lineTotal}</div>
+                  {/* <div className="item-total">₹{lineTotal}</div> */}
                 </div>
               );
             })}

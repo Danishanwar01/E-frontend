@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import tshirtImage from '../assets/images/cargo.jpeg';
+import tshirtImage from '../assets/images/bcargo.jpg';
 import '../styles/JacketEdition.css';
 
 const CargoEdition = () => (

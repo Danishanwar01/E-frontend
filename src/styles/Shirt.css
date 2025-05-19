@@ -1,0 +1,146 @@
+.hd-section {
+  padding: 4rem 2rem;
+  background: #fafafa;
+}
+
+.hd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.hd-title-wrap { position: relative; }
+
+.hd-title {
+  font-size: 2.8rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin: 0;
+}
+
+.hd-underline {
+  width: 120px;
+  height: 2px;
+  background: #2a2a2a;
+  margin-top: 1rem;
+}
+
+.hd-filters {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.hd-filter {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hd-filter--active {
+  background: #2a2a2a;
+  color: #fff;
+  border-radius: 20px;
+}
+
+/* Swiper wrapper */
+.hd-swiper-wrapper {
+  position: relative;
+  background: #fff;
+  padding: 2rem 1rem;
+  border-radius: 0;
+  margin-bottom: 2rem;
+}
+
+/* Card styles */
+.hd-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.hd-card:hover {
+  transform: translateY(-5px);
+  border: 2px solid #000; /* hover पर काला बॉर्डर */
+}
+
+/* Image */
+.hd-image-wrap {
+  position: relative;
+  padding-top: 120%;
+  background: #f0f0f0;
+}
+
+.hd-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Info */
+.hd-info {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.hd-name {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.hd-price {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+/* Navigation wrapper */
+.hd-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Navigation buttons */
+.hd-prev,
+.hd-next {
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hd-prev:hover,
+.hd-next:hover {
+  background: #2a2a2a;
+  color: #fff;
+  border-color: #2a2a2a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hd-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  .hd-image-wrap {
+    padding-top: 100%;
+  }
+}

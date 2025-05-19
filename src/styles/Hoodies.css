@@ -54,10 +54,10 @@
   
   .product-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 0px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  transition: transform 0.3s ease; 
   }
   
   .product-card:hover {
@@ -67,7 +67,7 @@
   .image-container {
     position: relative;
     padding-top: 120%;
-    background: #f0f0f0;
+    background: #ffff;
   }
   
   .product-image {
@@ -99,6 +99,7 @@
     margin: 0.5rem 0;
     font-weight: 500;
     text-transform: uppercase;
+    text-decoration: none;
   }
   
   .product-price {

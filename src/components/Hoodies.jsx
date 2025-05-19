@@ -1,79 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import { Link }                    from 'react-router-dom';
-import { Swiper, SwiperSlide }     from 'swiper/react';
-import SwiperCore, { Navigation }  from 'swiper';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import '../styles/Hoodies.css';
-import { fetchProducts }           from '../api/products';
-import { fetchCategories}         from '../api/categories';
+import '../styles/Jacket.css';
+
+import { fetchProducts } from '../api/products';
+import { fetchCategories } from '../api/categories';
 
 SwiperCore.use([Navigation]);
 
 export default function Hoodies() {
-  const [hoodCatId, setHoodCatId] = useState('');
-  const [subs, setSubs]           = useState([]);    
-  const [selSub, setSelSub]       = useState('');    
-  const [hoodies, setHoodies]     = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState(null);
+  const [subs, setSubs] = useState([]);
+  const [categoryId, setCategoryId] = useState(null);
+  const [selectedSub, setSelectedSub] = useState('all');
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const swiperRef = useRef(null);
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+  const location = useLocation();
 
-  // 1) Load “Hoodies” category + subcategories
+  // 1) Reload items when navigating back
+  useEffect(() => {
+    if (categoryId) {
+      console.log('[DEBUG] location changed, reloading items for sub:', selectedSub);
+      loadItems(selectedSub);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
+
+  // 2) Load “Hoodie” category ID and subcategories on mount
   useEffect(() => {
     (async () => {
       try {
+        console.log('[DEBUG] fetching categories…');
         const { data: cats } = await fetchCategories();
-        const hood = cats.find(c => c.name.toLowerCase() === 'hoodies');
-        if (!hood) throw new Error('Hoodies category not found');
-        setHoodCatId(hood._id);
-        setSubs(hood.subcategories);
-        await loadProducts(hood._id, '');
+        console.log('[DEBUG] fetchCategories returned:', cats);
+
+        // Adjust this if your backend’s category name is “Hoodies” (plural) instead of “Hoodie”
+        const hoodiesCat = cats.find(c => c.name.toLowerCase() === 'hoodies');
+        if (!hoodiesCat) {
+          console.error('[DEBUG] Categories fetched but no “hoodies” found');
+          throw new Error('Hoodies category not found');
+        }
+
+        console.log('[DEBUG] Found hoodies category:', hoodiesCat);
+        setCategoryId(hoodiesCat._id);
+        setSubs(hoodiesCat.subcategories || []);
+        console.log('[DEBUG] Set subs to:', hoodiesCat.subcategories);
       } catch (e) {
-        console.error(e);
-        setError(e.message);
+        console.error('[DEBUG] Error fetching categories:', e);
+        setError('Failed to load categories');
         setLoading(false);
       }
     })();
   }, []);
 
-  // 2) Fetch hoodies (filtered by subcategory if provided)
-  async function loadProducts(categoryId, subId) {
+  // 3) Fetch items based on subcategory
+  const loadItems = async (subId) => {
+    if (!categoryId) return;
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await fetchProducts({ category: categoryId, subcategory: subId });
-      setHoodies(data);
-    } catch {
+      const params = { category: categoryId };
+      if (subId && subId !== 'all') params.subcategory = subId;
+      console.log('[DEBUG] calling fetchProducts with params:', params);
+      const { data } = await fetchProducts(params);
+      console.log('[DEBUG] fetchProducts returned:', data);
+      setItems(data || []);
+    } catch (e) {
+      console.error('[DEBUG] Error loading hoodies:', e);
       setError('Failed to load hoodies');
     } finally {
       setLoading(false);
     }
-  }
-
-  // 3) Sub-filter handler
-  const onFilterClick = subId => {
-    setSelSub(subId);
-    loadProducts(hoodCatId, subId);
   };
 
-  if (loading) return <p className="text-center">Loading hoodies…</p>;
-  if (error)   return <p className="text-center text-danger">{error}</p>;
+  // 4) Initial load of “all” when categoryId becomes available
+  useEffect(() => {
+    if (categoryId) {
+      console.log('[DEBUG] categoryId set to', categoryId, '- loading all items');
+      loadItems('all');
+    }
+  }, [categoryId]);
+
+  const handleFilter = (subId) => {
+    if (selectedSub === subId) return;
+    console.log('[DEBUG] switching filter from', selectedSub, 'to', subId);
+    setSelectedSub(subId);
+    loadItems(subId);
+  };
+
+  if (loading) return <p className="text-center">Loading…</p>;
+  if (error) return <p className="text-center text-danger">{error}</p>;
 
   return (
-    <section className="hoodies-section">
-      <div className="section-header">
-        <h1 className="section-title">HOODIES</h1>
-        <div className="category-filters">
+    <section className="hd-section">
+      <div className="hd-header">
+        <div className="hd-title-wrap">
+          <h2 className="hd-title">HOODIES</h2>
+          <div className="hd-underline" />
+        </div>
+        <div className="hd-filters">
           <button
-            className={`filter-btn ${selSub === '' ? 'active' : ''}`}
-            onClick={() => onFilterClick('')}
+            className={`hd-filter ${selectedSub === 'all' ? 'hd-filter--active' : ''}`}
+            onClick={() => handleFilter('all')}
           >
             All
           </button>
           {subs.map(sub => (
             <button
               key={sub._id}
-              className={`filter-btn ${selSub === sub._id ? 'active' : ''}`}
-              onClick={() => onFilterClick(sub._id)}
+              className={`hd-filter ${selectedSub === sub._id ? 'hd-filter--active' : ''}`}
+              onClick={() => handleFilter(sub._id)}
             >
               {sub.name}
             </button>
@@ -81,58 +123,74 @@ export default function Hoodies() {
         </div>
       </div>
 
-      <Swiper
-        modules={[Navigation]}
-        spaceBetween={30}
-        slidesPerView={4}
-        navigation={{
-          nextEl: '.custom-next',
-          prevEl: '.custom-prev',
-        }}
-        breakpoints={{
-          320:  { slidesPerView: 1 },
-          640:  { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
-          1280: { slidesPerView: 4 }
-        }}
-      >
-        {hoodies.map((prod, idx) => {
-          const imgUrl = prod.images?.[0]
-            ? `http://localhost:5000${prod.images[0]}`
-            : require('../assets/images/product-1.png');
-          const finalPrice = prod.discount > 0
-            ? (prod.price * (1 - prod.discount/100)).toFixed(2)
-            : prod.price.toFixed(2);
+      <div className="hd-swiper-wrapper">
+        <button ref={prevRef} className="hd-prev">&#8592;</button>
+        <button ref={nextRef} className="hd-next">&#8594;</button>
 
-          return (
-            <SwiperSlide key={prod._id}>
-              {/* 1) Wrap entire card in a Link to /product/:id */}
-              <Link to={`/product/${prod._id}`} className="product-card">
-                <div className="image-container">
-                  <img src={imgUrl} alt={prod.title} className="product-image" />
-                  <span className="product-number">0{idx + 1}</span>
-                </div>
-                <div className="product-details">
-                  <h3 className="product-title">{prod.title}</h3>
-                  <p className="product-price">
-                    {prod.discount > 0
-                      ? <>
+        <Swiper
+          modules={[Navigation]}
+          spaceBetween={20}
+          slidesPerView={4}
+          onSwiper={swiper => {
+            swiperRef.current = swiper;
+            setTimeout(() => {
+              if (
+                swiperRef.current &&
+                prevRef.current &&
+                nextRef.current &&
+                swiperRef.current.navigation
+              ) {
+                swiperRef.current.params.navigation.prevEl = prevRef.current;
+                swiperRef.current.params.navigation.nextEl = nextRef.current;
+                swiperRef.current.navigation.destroy();
+                swiperRef.current.navigation.init();
+                swiperRef.current.navigation.update();
+              }
+            }, 0);
+          }}
+          breakpoints={{
+            320:  { slidesPerView: 2 },
+            640:  { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+        >
+          {items.map((prod, idx) => {
+            console.log('[DEBUG] rendering product:', prod);
+            const imgUrl = prod.images?.[0]
+              ? `http://localhost:5000${prod.images[0]}`
+              : require('../assets/images/product-1.png');
+            return (
+              <SwiperSlide key={prod._id}>
+                <Link to={`/product/${prod._id}`} className="hd-card">
+                  <div className="hd-image-wrap">
+                    <img src={imgUrl} alt={prod.title} className="hd-image" />
+                    {/* <span className="hd-index">0{idx + 1}</span> */}
+                  </div>
+                  <div className="hd-info">
+                    <h3 className="hd-name">{prod.title}</h3>
+                    <p className="hd-price">
+                      {prod.discount > 0 ? (
+                        <>
                           <del>₹{prod.price}</del>{' '}
-                          <strong>₹{finalPrice}</strong>
+                          <strong>
+                            ₹
+                            {(
+                              prod.price *
+                              (1 - prod.discount / 100)
+                            ).toFixed(2)}
+                          </strong>
                         </>
-                      : <strong>₹{prod.price}</strong>
-                    }
-                  </p>
-                </div>
-              </Link>
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
-
-      <div className="custom-navigation">
-        <button className="custom-prev">&larr;</button>
-        <button className="custom-next">&rarr;</button>
+                      ) : (
+                        <strong>₹{prod.price.toFixed(2)}</strong>
+                      )}
+                    </p>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
       </div>
     </section>
   );
