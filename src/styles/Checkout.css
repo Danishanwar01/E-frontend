@@ -43,13 +43,15 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+
 }
+
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #333;
+  color: #000000;
 }
 
 .form-group input {
@@ -182,11 +184,43 @@
 }
 
 /* Loading spinner or order‐success state */
-.cart-loading,
-.order-success {
+.cart-loading
+ {
   text-align: center;
   padding: 4rem 2rem;
 }
+.order-success {
+  border: 2px solid black;
+  max-width: 600px;           
+  margin: 2rem auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #fff;
+
+  display: flex;
+  flex-direction: column;     
+  align-items: center;        
+  justify-content: center;    
+
+ 
+  min-height: 300px;
+  text-align: center;         
+}
+
+.order-success h2,
+.order-success h3 {
+  margin: 0.5rem 0;
+}
+
+.order-success button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  
+}
+
+
 
 .spinner {
   border: 4px solid #f3f3f3;

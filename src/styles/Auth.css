@@ -1,97 +1,437 @@
-/* Auth.css */
-.auth-container {
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 80vh;
-background-color: #f5f5f5;
-padding: 1rem;
+/* ------------------------------------------------------------
+   GENERAL RESET & TYPOGRAPHY
+   ------------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.auth-form {
-background: #ffffff;
-border-radius: 8px;
-padding: 2rem;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-width: 100%;
-max-width: 400px;
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
 }
 
-.auth-heading {
-margin-bottom: 1.5rem;
-font-size: 1.75rem;
-text-align: center;
-color: #333;
+/* ------------------------------------------------------------
+   CONTAINER LAYOUT
+   ------------------------------------------------------------ */
+.profile-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  margin: 1rem;
+  border: 2px solid black;
+  border-radius: 4px;
 }
 
-.form-group {
-margin-bottom: 1rem;
+.profile-section,
+.orders-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-.form-group label {
-display: block;
-margin-bottom: 0.5rem;
-color: #555;
-font-weight: 500;
+/* ------------------------------------------------------------
+   DROPDOWN PANEL (PROFILE & ORDERS)
+   ------------------------------------------------------------ */
+.dropdown-panel {
+  width: 100%;
+  max-width: 500px;
 }
 
-.form-group input {
-width: 100%;
-padding: 0.75rem;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 1rem;
+.dropdown-header {
+  width: 100%;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 1rem 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
 }
 
-.form-group input.error {
-border-color: #e74c3c;
+.dropdown-header .arrow {
+  border: solid #000000;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
 }
 
-.error-msg {
-display: block;
-margin-top: 0.25rem;
-color: #e74c3c;
-font-size: 0.875rem;
+.dropdown-header .arrow.open {
+  transform: rotate(-135deg);
 }
 
-.btn.auth-btn {
-width: 100%;
-padding: 0.75rem;
-background-color: #4a90e2;
-color: #fff;
-border: none;
-border-radius: 4px;
-font-size: 1rem;
-cursor: pointer;
-transition: background-color 0.2s ease;
+.dropdown-content {
+  border: 2px solid #000000;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  background-color: #fff;
+  padding: 1.5rem;
 }
 
-.btn.auth-btn:hover {
-background-color: #357ab8;
+/* ------------------------------------------------------------
+   PROFILE CARD (inside Profile dropdown)
+   ------------------------------------------------------------ */
+.profile-card {
+  background-color: #fff;
 }
 
-.auth-switch {
-margin-top: 1rem;
-text-align: center;
-font-size: 0.9rem;
-color: #666;
+.profile-form .form-group {
+  margin-bottom: 1rem;
 }
 
-.auth-link {
-color: #4a90e2;
-cursor: pointer;
-text-decoration: underline;
+.form-group .input {
+  border: 2px solid black;
 }
 
-.auth-link:hover {
-color: #357ab8;
+.profile-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.profile-form input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.profile-form input:focus {
+  border-color: #000000;
+  outline: none;
+}
+
+.form-message {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #2ecc71; /* success color */
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #000000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #357ab8;
+}
+
+.btn-logout {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-logout:hover {
+  background-color: #c0392b;
+}
+
+/* ------------------------------------------------------------
+   ORDERS LIST STYLES (inside Orders dropdown)
+   ------------------------------------------------------------ */
+.orders-card {
+  background-color: #fafafa;
+}
+
+.no-orders {
+  text-align: center;
+  color: #777;
+  font-size: 1rem;
+}
+
+/* ----------------------------
+   SCROLLABLE ORDER CARD
+   ---------------------------- */
+.order-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  max-height: 500px;       /* CARD HEIGHT CAP */
+  overflow-y: auto;        /* ENABLE VERTICAL SCROLL */
+}
+
+/* Optional: custom scrollbar styling (WebKit Browsers) */
+.order-card::-webkit-scrollbar {
+  width: 8px;
+}
+.order-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+.order-card::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.order-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.75rem;
+}
+
+.order-header h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin: 0;
+}
+
+.order-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+.order-meta {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.order-shipping {
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+}
+
+.item-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.item-details {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.no-items {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* ------------------------------------------------------------
+   TRACKING TIMELINE
+   ------------------------------------------------------------ */
+.timeline {
+  position: relative;
+  margin-top: 1rem;
+  padding-left: 2rem; /* space for the vertical line & dots */
+}
+
+.timeline:before {
+  content: "";
+  position: absolute;
+  left: 1rem; /* center of the dots */
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #000000; /* line color */
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem; /* space below each event */
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0; /* no extra gap after last */
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 1rem; /* same as the vertical line's center */
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #000000; /* dot color */
+  top: 0;
+  transform: translate(-50%, 0);
+}
+
+.timeline-content {
+  margin-left: 2rem; /* ensure text is to the right of the line */
+}
+
+.timeline-status {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #222;
+}
+
+.timeline-message {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.25rem 0;
+}
+
+.timeline-timestamp {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ------------------------------------------------------------
+   REVIEW FORM (inside Profile → Orders)
+   ------------------------------------------------------------ */
+.review-form {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.review-group {
+  margin-bottom: 0.5rem;
+}
+
+.review-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.review-group select,
+.review-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.review-group textarea {
+  min-height: 60px;
+}
+
+.review-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-submit-review {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-submit-review:disabled {
+  background-color: #9ccc9c;
+  cursor: not-allowed;
+}
+
+.review-thankyou {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #2ecc71;
 }
 
 
+/* ------------------------------------------------------------
+   LOADING TEXT
+   ------------------------------------------------------------ */
+.loading-text {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #555;
+}
 
+/* ------------------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+   ------------------------------------------------------------ */
+@media (max-width: 992px) {
+  .profile-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 
+  .dropdown-panel {
+    max-width: 100%;
+    border: 2px solid black;
+    border-radius: 4px;
+  }
 
+  .dropdown-content {
+    padding: 1rem;
+  }
+}
 
+@media (max-width: 576px) {
+  .profile-form input {
+    padding: 0.5rem;
+  }
 
+  .btn-primary,
+  .btn-logout {
+    padding: 0.6rem;
+    font-size: 0.95rem;
+  }
 
+  .item-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
+  .item-details {
+    margin-top: 0.25rem;
+  }
+}
