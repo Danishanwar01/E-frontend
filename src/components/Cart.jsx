@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate }                from 'react-router-dom';
-import { fetchProductById }           from '../api/products';
+import { useNavigate } from 'react-router-dom';
+import { fetchProductById } from '../api/products';
 import '../styles/Cart.css';
 
 export default function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
-  const [products,  setProducts]  = useState({});
-  const [loading,   setLoading]   = useState(true);
-  const [error,     setError]     = useState(null);
+  const [products, setProducts] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Load cart from backend
   useEffect(() => {
     async function loadCart() {
       try {
         const userRes = JSON.parse(localStorage.getItem('user') || '{}');
-        const res      = await fetch(`http://localhost:5000/api/cart/${userRes.id}`);
-        const items    = await res.json();
+        const res = await fetch(`http://localhost:5000/api/cart/${userRes.id}`);
+        const items = await res.json();
         setCartItems(items);
 
         // Fetch product details
@@ -31,7 +31,7 @@ export default function Cart() {
         setProducts(details);
       } catch (e) {
         console.error(e);
-        setError('Error loading your cart');
+        setError('Please Login First');
       } finally {
         setLoading(false);
       }
@@ -50,9 +50,9 @@ export default function Cart() {
 
     const userRes = JSON.parse(localStorage.getItem('user') || '{}');
     await fetch(`http://localhost:5000/api/cart/${userRes.id}`, {
-      method:  'PUT',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ items: next })
+      body: JSON.stringify({ items: next })
     });
   };
 
@@ -65,9 +65,9 @@ export default function Cart() {
 
     const userRes = JSON.parse(localStorage.getItem('user') || '{}');
     await fetch(`http://localhost:5000/api/cart/${userRes.id}`, {
-      method:  'PUT',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ items: next })
+      body: JSON.stringify({ items: next })
     });
   };
 
@@ -93,7 +93,7 @@ export default function Cart() {
 
   const totalCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
   const grandTotal = cartItems.reduce((sum, { productId, qty }) => {
-    const p    = products[productId];
+    const p = products[productId];
     if (!p) return sum;
     const unit = p.discount ? p.price * (1 - p.discount / 100) : p.price;
     return sum + unit * qty;
@@ -154,29 +154,29 @@ export default function Cart() {
                         </div>
                       )}
                     </div>
-                   <div className="quantity-controls">
-  <button
-    className="qty-btn"
-    onClick={e => {
-      e.stopPropagation();
-      updateQty(productId, size, color, -1);
-    }}
-  >
-    −
-  </button>
+                    <div className="quantity-controls">
+                      <button
+                        className="qty-btn"
+                        onClick={e => {
+                          e.stopPropagation();
+                          updateQty(productId, size, color, -1);
+                        }}
+                      >
+                        −
+                      </button>
 
-  <span className="qty-count">{qty}</span>
+                      <span className="qty-count">{qty}</span>
 
-  <button
-    className="qty-btn"
-    onClick={e => {
-      e.stopPropagation();
-      updateQty(productId, size, color, 1);
-    }}
-  >
-    +
-  </button>
-</div>
+                      <button
+                        className="qty-btn"
+                        onClick={e => {
+                          e.stopPropagation();
+                          updateQty(productId, size, color, 1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
 
                     <button
                       className="remove-btn"

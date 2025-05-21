@@ -20,7 +20,7 @@
   text-transform: uppercase;
   letter-spacing: 4px;
   margin: 0;
- color: #000;
+  color: #000;
 }
 
 .hd-underline {
@@ -34,7 +34,6 @@
   display: flex;
   gap: 1.5rem;
   margin-left: 2rem;
-
 }
 
 .hd-filter {
@@ -48,13 +47,11 @@
   color: #000;   
 }
 
-
- .hd-filter--active {
+.hd-filter--active {
   background: #000;
   color: #fff;
   border-radius: 30px;
 }
-
 
 .hd-swiper-wrapper {
   background: #fff;
@@ -150,9 +147,11 @@
   border-color: #2a2a2a;
 }
 
-/* Responsive */
+/* Responsive: ≤ 768px */
 @media (max-width: 768px) {
-  .hd-swiper-wrapper { padding: 1rem; }
+  .hd-swiper-wrapper {
+    padding: 1rem;
+  }
   .hd-header {
     flex-direction: column;
     align-items: flex-start;
@@ -162,15 +161,101 @@
   .hd-prev,
   .hd-next {
     position: relative;
-    top: auto; transform: none;
-    left: 50%; margin: 1rem 0 0;
+    top: auto; 
+    transform: none;
+    left: 75%;
+    margin: 1rem 0 0;
     font-size: 0.9rem;
   }
 }
 
-/* Optional: show 3 cards (not 4) on mid‑size laptops */
+/* Optional: show 3 cards (not 4) on mid-size laptops */
 @media (min-width: 1024px) and (max-width: 1366px) {
   .swiper-container {
     --swiper-slides-per-view: 3 !important;
+  }
+}
+
+/* =========================== */
+/* Responsive: ≤ 480px screens  */
+/* =========================== */
+@media (max-width: 480px) {
+  /* Section padding shrinks */
+  .hd-section {
+    padding: 2rem 1rem;
+  }
+
+  /* Header stacks and shrinks title */
+  .hd-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .hd-title {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+  .hd-underline {
+    width: 80px;
+    height: 2px;
+    margin-top: 0.25rem;
+  }
+
+  /* Filters wrap and shrink */
+  .hd-filters {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-left: 0;
+  }
+  .hd-filter {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  /* Swiper wrapper padding reduced */
+  .hd-swiper-wrapper {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Cards become full-width blocks */
+  .hd-card {
+    max-width: 100%;
+    margin-top: 1.5rem;
+  }
+
+  /* Image containers keep aspect but shrink */
+  .hd-image-wrap {
+    padding-top: 120%;
+  }
+
+  /* Text inside cards slightly smaller */
+  .hd-name {
+    font-size: 1rem;
+  }
+  .hd-price {
+    font-size: 0.9rem;
+  }
+
+  /* Navigation buttons reposition below swiper */
+  .hd-prev,
+  .hd-next {
+    position: relative;
+    top: auto;
+    transform: none;
+    left: 75%;
+    margin: 0.5rem 0 0;
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  /* Stack prev/next vertically */
+  .hd-prev {
+    margin-right: 0.5rem;
+    display: inline-block;
+  }
+  .hd-next {
+    display: inline-block;
   }
 }

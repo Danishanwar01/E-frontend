@@ -20,9 +20,9 @@ export default function SocialComponent() {
                 <div className="col-4">
                   <h6 className="small fw-bold">Shop</h6>
                   <ul className="list-unstyled">
-                  <li><a href="#" className="text-dark small">All</a></li>
-                    <li><a href="#" className="text-dark small">Men</a></li>
-                    <li><a href="#" className="text-dark small">Women</a></li>
+                  <li><a href="/all-products" className="text-dark small">All</a></li>
+                    <li><a href="/all-products?gender=Men" className="text-dark small">Men</a></li>
+                    <li><a href="/all-products?gender=Women" className="text-dark small">Women</a></li>
                     
                   </ul>
                 </div>

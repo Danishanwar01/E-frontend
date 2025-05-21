@@ -333,6 +333,10 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.checkout-btn:hover {
+  background: #fff;
+}
+
 .remove-btn {
   display: inline-block;
   background-color: #000;       
@@ -349,7 +353,9 @@
 
 
 .remove-btn:hover {
-  background-color: #ad0f0f;       
+  background-color: #ffffff; 
+  color: #000; 
+  border: 2px solid black;     
 }
 
 

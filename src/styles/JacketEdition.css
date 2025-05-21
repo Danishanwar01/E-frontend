@@ -1,207 +1,305 @@
 /* src/styles/JacketEdition.css */
 .je-root {
-    background: #fff;
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
+  background: #fff;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.je-content {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4rem;
+  gap: 4rem;
+}
+
+.je-text-block {
+  position: relative;
+  z-index: 2;
+  padding-top: 4rem;
+}
+
+.je-title-wrapper {
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.je-title-main {
+  display: block;
+  font-size: 5rem;
+  color: #000;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 2px #c5a47f;
+  opacity: 0;
+  animation: fadeInUp 0.8s 0.2s forwards;
+}
+
+.je-title-sub {
+  display: block;
+  font-size: 2.2rem;
+  color: #c5a47f;
+  letter-spacing: 3px;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeInUp 0.8s 0.4s forwards;
+}
+
+.je-title-decoration {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 120px;
+  height: 3px;
+  background: #c5a47f;
+  opacity: 0;
+  animation: fadeIn 0.8s 0.6s forwards;
+}
+
+.je-divider-block {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.je-divider-line {
+  flex: 1;
+  height: 1px;
+  background: #000;
+  opacity: 0.3;
+}
+
+.je-subtext {
+  color: #000;
+  font-size: 1.1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin: 0;
+  border-bottom: 2px solid #c5a47f;
+  padding-bottom: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 0.8s 0.8s forwards;
+}
+
+.je-buttons {
+  display: flex;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.je-btn {
+  position: relative;
+  padding: 1.2rem 2.5rem;
+  border: 2px solid #c5a47f;
+  color: #000;
+  background: #fff;
+  text-decoration: none;
+  overflow: hidden;
+  transition: background 0.4s ease;
+  opacity: 0;
+  animation: fadeIn 0.8s 1s forwards;
+}
+
+.je-btn:hover {
+  background: #c5a47f;
+  color: #fff;
+}
+
+.je-btn-hover {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(197, 164, 127, 0.2);
+  transition: all 0.6s ease;
+}
+
+.je-btn:hover .je-btn-hover {
+  left: 100%;
+}
+
+.je-image-block {
+  position: relative;
+}
+
+.je-image-frame {
+  position: relative;
+  z-index: 1;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  height: 80vh;
+  animation: float 4s ease-in-out infinite;
+}
+
+.je-image {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+}
+
+.je-image-pattern {
+  position: absolute;
+  top: -50px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(197,164,127,0.05) 0%, transparent 70%);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* =========================== */
+/* Responsive: ≤ 1200px screens */
+/* =========================== */
+@media (max-width: 1200px) {
   .je-content {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 4rem;
-    gap: 4rem;
+    grid-template-columns: 1fr;
+    padding: 2rem;
   }
-  
-  .je-text-block {
-    position: relative;
-    z-index: 2;
-    padding-top: 4rem;
-  }
-  
-  .je-title-wrapper {
-    position: relative;
-    margin-bottom: 3rem;
-  }
-  
-  .je-title-main {
-    display: block;
-    font-size: 5rem;
-    color: #000;
-    letter-spacing: -2px;
-    line-height: 1;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 2px #c5a47f;
-    opacity: 0;
-    animation: fadeInUp 0.8s 0.2s forwards;
-  }
-  
-  .je-title-sub {
-    display: block;
-    font-size: 2.2rem;
-    color: #c5a47f;
-    letter-spacing: 3px;
-    font-weight: 300;
-    opacity: 0;
-    animation: fadeInUp 0.8s 0.4s forwards;
-  }
-  
-  .je-title-decoration {
-    position: absolute;
-    bottom: -15px;
-    left: 0;
-    width: 120px;
-    height: 3px;
-    background: #c5a47f;
-    opacity: 0;
-    animation: fadeIn 0.8s 0.6s forwards;
-  }
-  
-  .je-divider-block {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    margin: 3rem 0;
-  }
-  
-  .je-divider-line {
-    flex: 1;
-    height: 1px;
-    background: #000;
-    opacity: 0.3;
-  }
-  
-  .je-subtext {
-    color: #000;
-    font-size: 1.1rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin: 0;
-    border-bottom: 2px solid #c5a47f;
-    padding-bottom: 0.5rem;
-    opacity: 0;
-    animation: fadeIn 0.8s 0.8s forwards;
-  }
-  
-  .je-buttons {
-    display: flex;
-    gap: 2rem;
-    margin-top: 4rem;
-  }
-  
-  .je-btn {
-    position: relative;
-    padding: 1.2rem 2.5rem;
-    border: 2px solid #c5a47f;
-    color: #000;
-    background: #fff;
-    text-decoration: none;
-    overflow: hidden;
-    transition: background 0.4s ease;
-    opacity: 0;
-    animation: fadeIn 0.8s 1s forwards;
-  }
-  
-  .je-btn:hover {
-    background: #c5a47f;
-    color: #fff;
-  }
-  
-  .je-btn-hover {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: rgba(197, 164, 127, 0.2);
-    transition: all 0.6s ease;
-  }
-  
-  .je-btn:hover .je-btn-hover {
-    left: 100%;
-  }
-  
-  .je-image-block {
-    position: relative;
-  }
-  
   .je-image-frame {
-    position: relative;
-    z-index: 1;
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    height: 80vh;           
-    animation: float 4s ease-in-out infinite;
+    height: 50vh; /* reduce image height */
   }
-  
+  .je-image {
+    height: 100%;
+    width: auto;
+  }
+  .je-title-main {
+    font-size: 3.5rem;
+  }
+  .je-title-sub {
+    font-size: 1.8rem;
+  }
+}
+
+/* =========================== */
+/* Responsive: ≤ 768px screens */
+/* =========================== */
+@media (max-width: 768px) {
+  .je-buttons {
+    flex-direction: column;
+    gap: 1rem; /* reduce gap between stacked buttons */
+  }
+  .je-btn {
+    width: 100%; /* make buttons full-width */
+    text-align: center;
+    padding: 1rem 1.5rem;
+  }
+  .je-title-main {
+    font-size: 2.5rem;
+    line-height: 1.1;
+  }
+  .je-title-sub {
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
+  .je-divider-block {
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+  .je-subtext {
+    font-size: 1rem;
+    letter-spacing: 3px;
+  }
+  .je-image-frame {
+    height: 40vh; /* further reduce on tablets */
+  }
+}
+
+/* =========================== */
+/* Responsive: ≤ 480px screens */
+/* =========================== */
+@media (max-width: 480px) {
+  .je-content {
+    grid-template-columns: 1fr;
+    padding: 1.5rem; /* cut padding in half */
+    gap: 2rem;       /* reduce gap */
+  }
+
+  .je-text-block {
+    padding-top: 2rem;
+  }
+
+  .je-title-main {
+    font-size: 2rem;  /* scale down titles */
+    margin-bottom: 0.5rem;
+  }
+  .je-title-sub {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+  .je-title-decoration {
+    bottom: -10px;
+    width: 80px;      /* shorter decoration */
+    height: 2px;
+  }
+
+  .je-divider-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  .je-divider-line {
+    width: 50px;     /* make divider shorter */
+    height: 1px;
+  }
+
+  .je-subtext {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #c5a47f;
+    padding-bottom: 0.3rem;
+  }
+
+  .je-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .je-btn {
+    padding: 0.8rem 1.5rem; /* smaller touch targets */
+    font-size: 0.95rem;
+  }
+
+  .je-image-block {
+    margin-top: 2rem; /* add spacing above image on very small screens */
+  }
+  .je-image-frame {
+    height: 30vh;    /* constrain image height */
+    border-radius: 20px;
+  }
   .je-image {
     width: auto;
-    height: 100%;          
-    object-fit: contain;   
+    height: 100%;
   }
-  
+
   .je-image-pattern {
-    position: absolute;
-    top: -50px;
-    right: -100px;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(197,164,127,0.05) 0%, transparent 70%);
+    display: none;  /* hide decorative pattern to simplify layout */
   }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-  }
-  
-  @media (max-width: 1200px) {
-    .je-content {
-      grid-template-columns: 1fr;
-      padding: 2rem;
-    }
-    .je-image-frame {
-      height: 50vh;
-    }
-    .je-image {
-      height: 100%;
-      width: auto;
-    }
-    .je-title-main {
-      font-size: 3.5rem;
-    }
-    .je-title-sub {
-      font-size: 1.8rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .je-buttons {
-      flex-direction: column;
-    }
-    .je-title-main {
-      font-size: 2.5rem;
-    }
-    .je-title-sub {
-      font-size: 1.4rem;
-    }
-  }
-  
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Auth.css';
+import '../styles/Login.css';
 
 export function Login() {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export function Login() {
         ].map(([field,label]) => (
           <div className="form-group" key={field}>
             <label>{label}</label>
-            <input
+            <input style={{border:"2px solid black"}}
               type={field==='password'?'password':'text'}
               name={field}
               value={form[field]}

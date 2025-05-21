@@ -131,7 +131,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #357ab8;
+  background-color: #b4c1cc;
 }
 
 .btn-logout {
@@ -148,8 +148,11 @@ body {
 }
 
 .btn-logout:hover {
-  background-color: #c0392b;
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid black;
 }
+
 
 /* ------------------------------------------------------------
    ORDERS LIST STYLES (inside Orders dropdown)
@@ -373,7 +376,7 @@ body {
   font-size: 0.9rem;
 }
 
-.btn-submit-review:disabled {
+.btn-submit-review:hover {
   background-color: #9ccc9c;
   cursor: not-allowed;
 }

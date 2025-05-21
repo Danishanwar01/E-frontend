@@ -1,16 +1,21 @@
 :root {
-  --primary-color: #2d3436;
-  --accent-color:  #e74c3c;
-  --light-bg:      #f8f9fa;
-  --border-color:  #e0e0e0;
-  --text-light:    #666;
+  --primary-color:  #2d3436;
+  --accent-color:   #e74c3c;
+  --light-bg:       #ffffff;
+  --border-color:   #ffffff;
+  --text-light:     #000000;
+  --font-base:      'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* PAGE CONTAINER & HEADER                                                      */
+/* ──────────────────────────────────────────────────────────────────────────── */
 .all-products-page {
   max-width: 1440px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
   background: var(--light-bg);
+  font-family: var(--font-base);
 }
 
 .page-header {
@@ -21,6 +26,8 @@
 .page-header h1 {
   font-size: 2.75rem;
   color: var(--primary-color);
+  letter-spacing: 2px;
+  text-transform: uppercase;
   margin-bottom: 0.5rem;
 }
 
@@ -29,45 +36,73 @@
   font-size: 0.95rem;
 }
 
-.layout-container {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 2rem;
-}
-
-.filters-sidebar {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 1rem;
-}
-
-.products-main {
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* TOP BAR: “Filter” & “Sort” BUTTONS (always visible)                           */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.mobile-header {
   display: flex;
-  flex-direction: column;
-}
-
-.sort-controls {
-  margin-bottom: 2rem;
-  text-align: right;
-}
-
-.sort-select {
+  gap: 1rem;
+  width: 100%;
+  background: #ffffff;
+ 
   padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: white;
-  font-size: 0.95rem;
+  margin-bottom: 1rem;
 }
 
+.mobile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 2px solid black;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  color: black;
+  cursor: pointer;
+}
+
+.mobile-btn:hover {
+  background: var(--light-bg);
+}
+
+.icon-filter,
+.icon-sort {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.btn-label {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* OFF-SCREEN SELECTS (needed so .focus() still opens native pickers)           */
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* AllProductsPage.css */
+.hidden-selects {
+  display: block; /* Temporarily visible for testing */
+  margin: 20px 0;
+}
+
+.hidden-select {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 8px;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* PRODUCTS GRID (NO SIDEBAR)                                                    */
+/* ──────────────────────────────────────────────────────────────────────────── */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
+  /* We'll override columns by media query below */
 }
 
+/* “No results” fallback */
 .no-results {
   grid-column: 1 / -1;
   text-align: center;
@@ -75,73 +110,197 @@
   color: var(--text-light);
 }
 
-/* FilterSection */
-.filter-section {
-  margin-bottom: 2rem;
-}
-
-.filter-section h3 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: var(--primary-color);
-}
-
-/* Checkbox filters */
-.filter-option {
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* Product Card CSS (UNCHANGED FROM BEFORE)                                      */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.hd-card {
   display: flex;
-  align-items: center;
-  margin: 0.5rem 0;
+  flex-direction: column;
+  background: #fff;
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: border-color 0.3s;
+  margin-top: 1rem;
+  text-decoration: none;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hd-card:hover {
+  border-color: #000;
+}
+
+.hd-image-wrap {
   position: relative;
-  padding-left: 28px;
-  cursor: pointer;
+  padding-top: 140%;
+  background: #f0f0f0;
 }
 
-.filter-option input {
+.hd-image {
   position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.checkmark {
-  position: absolute;
+  top: 0;
   left: 0;
-  height: 18px;
-  width: 18px;
-  border: 2px solid var(--border-color);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hd-info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.hd-name {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  color:black;
+}
+
+.hd-price {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.hd-price del {
+  color: rgba(0, 0, 0, 0.4);
+  margin-right: 0.5rem;
+}
+
+.hd-price strong {
+  color: rgba(0, 0, 0, 0.8);
+}
+.filter-panel,
+.sort-panel {
+  background: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 2px solid black;
   border-radius: 4px;
-  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 20%;
+}
+.dan{
+  border: 2px solid black;
+}
+.pagination-controls {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
-.filter-option:hover input ~ .checkmark {
-  border-color: var(--primary-color);
+.pagination-controls button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #000;
+  background: white;
+  color: black;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.filter-option input:checked ~ .checkmark {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+.pagination-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* Size pills */
-.size-option .size-label {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  transition: all 0.2s;
+.pagination-controls span {
+  font-weight: 500;
 }
 
-.size-option input:checked ~ .size-label {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
-}
 
-/* Responsive */
-@media (max-width: 768px) {
-  .layout-container { grid-template-columns: 1fr; }
-  .filters-sidebar {
-    position: static;
-    margin-bottom: 2rem;
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* RESPONSIVE GRID COLUMNS                                                       */
+/* ──────────────────────────────────────────────────────────────────────────── */
+
+/* 1) MOBILE (<480px): 2 columns */
+@media (max-width: 479px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
-  .page-header h1 { font-size: 2rem; }
+  .mobile-header {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  background: #ffffff;
+ margin-left: 18%;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+.filter-panel,
+.sort-panel {
+  background: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 2px solid black;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 50%;
+}
+.dan{
+  border: 2px solid black;
+}
+}
+
+/* 2) SMALL TABLET (480px–767px): 2 columns */
+@media (min-width: 480px) and (max-width: 767px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .filter-panel,
+.sort-panel {
+  background: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 2px solid black;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 50%;
+}
+.dan{
+  border: 2px solid black;
+}
+}
+
+/* 3) TABLET (768px–1023px): 3 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .filter-panel,
+.sort-panel {
+  background: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 2px solid black;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 40%;
+}
+.dan{
+  border: 2px solid black;
+}
+}
+
+/* 4) LAPTOP (≥1024px): 5 columns */
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+  }
 }

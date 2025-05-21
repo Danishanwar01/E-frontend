@@ -1,0 +1,192 @@
+/* login css */
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* BASE VARIABLES                                                               */
+/* ──────────────────────────────────────────────────────────────────────────── */
+:root {
+  --primary-color:   #2d3436;
+  --accent-color:    #e74c3c;
+  --light-bg:        #fff;
+  --input-bg:        #ffffff;
+  --input-border:    #000;
+  --error-color:     #e74c3c;
+  --font-base:       'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --transition-fast: 0.2s ease-in-out;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* CONTAINER & FORM LAYOUT                                                      */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--light-bg);
+  padding: 1rem;
+}
+
+.auth-form {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 4px;
+  border: 2px solid black;
+ 
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.auth-heading {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* FORM GROUPS                                                                  */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+
+.form-group input {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background: var(--input-bg);
+  transition: border var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.1);
+}
+
+.form-group input.error {
+  border-color: var(--error-color);
+}
+
+.error-msg {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* BUTTON                                                                      */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.auth-btn {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.auth-btn:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  border: 2px solid black;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* SWITCH TO SIGNUP LINK                                                        */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.auth-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.auth-link {
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.auth-link:hover {
+  color: var(--accent-color);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* RESPONSIVE ADJUSTMENTS                                                        */
+/* ──────────────────────────────────────────────────────────────────────────── */
+
+/* Tablet & Up (≥768px) */
+@media (min-width: 768px) {
+  .auth-form {
+    padding: 3rem 2rem;
+    max-width: 450px;
+  }
+
+  .auth-heading {
+    font-size: 2rem;
+  }
+
+  .form-group input {
+    font-size: 1.05rem;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .btn {
+    font-size: 1.05rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .auth-switch {
+    font-size: 0.95rem;
+  }
+}
+
+/* Desktop & Up (≥1024px) */
+@media (min-width: 1024px) {
+  .auth-form {
+    max-width: 500px;
+  }
+
+  .auth-heading {
+    font-size: 2.25rem;
+  }
+
+  .form-group input {
+    font-size: 1.1rem;
+    padding: 0.7rem 1rem;
+  }
+
+  .btn {
+    font-size: 1.1rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .auth-switch {
+    font-size: 1rem;
+  }
+}
