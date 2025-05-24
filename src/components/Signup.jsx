@@ -29,7 +29,7 @@ export function Signup() {
   const handleSubmit = e => {
     e.preventDefault();
     if (!validate()) return;
-    fetch('http://localhost:5000/api/userdata/signup', {
+    fetch('https://e-backend-rf04.onrender.com/api/userdata/signup', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(form)

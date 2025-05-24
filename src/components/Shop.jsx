@@ -42,7 +42,7 @@ export default function Shop() {
             {products.map(prod => {
               // pick the first image URL or fallback
               const imgUrl = prod.images?.[0]
-                ? `http://localhost:5000${prod.images[0]}`
+                ? `https://e-backend-rf04.onrender.com${prod.images[0]}`
                 : require("../assets/images/product-1.png");
 
               // calculate final price after discount (optional)

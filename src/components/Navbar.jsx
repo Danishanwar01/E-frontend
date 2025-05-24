@@ -42,7 +42,7 @@ export default function Navbar() {
     async function loadCount() {
       if (user?.id) {
         try {
-          const res = await fetch(`http://localhost:5000/api/cart/${user.id}`);
+          const res = await fetch(`https://e-backend-rf04.onrender.com/api/cart/${user.id}`);
           const items = await res.json();
           setCartCount(items.reduce((sum, i) => sum + (i.qty || 0), 0));
           return;

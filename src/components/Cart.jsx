@@ -15,7 +15,7 @@ export default function Cart() {
     async function loadCart() {
       try {
         const userRes = JSON.parse(localStorage.getItem('user') || '{}');
-        const res = await fetch(`http://localhost:5000/api/cart/${userRes.id}`);
+        const res = await fetch(`https://e-backend-rf04.onrender.com/api/cart/${userRes.id}`);
         const items = await res.json();
         setCartItems(items);
 
@@ -49,7 +49,7 @@ export default function Cart() {
     setCartItems(next);
 
     const userRes = JSON.parse(localStorage.getItem('user') || '{}');
-    await fetch(`http://localhost:5000/api/cart/${userRes.id}`, {
+    await fetch(`https://e-backend-rf04.onrender.com/api/cart/${userRes.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: next })
@@ -64,7 +64,7 @@ export default function Cart() {
     setCartItems(next);
 
     const userRes = JSON.parse(localStorage.getItem('user') || '{}');
-    await fetch(`http://localhost:5000/api/cart/${userRes.id}`, {
+    await fetch(`https://e-backend-rf04.onrender.com/api/cart/${userRes.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: next })
@@ -136,7 +136,7 @@ export default function Cart() {
                 >
                   <img
                     className="item-img"
-                    src={`http://localhost:5000${p.images[0]}`}
+                    src={`https://e-backend-rf04.onrender.com${p.images[0]}`}
                     alt={p.title}
                   />
                   <div className="item-info">

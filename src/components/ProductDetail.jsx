@@ -39,7 +39,7 @@ export default function ProductDetail() {
   // 2) Load product reviews
   useEffect(() => {
     setReviewsLoading(true);
-    fetch(`http://localhost:5000/api/products/${id}/reviews`)
+    fetch(`https://e-backend-rf04.onrender.com/api/products/${id}/reviews`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch reviews');
         return res.json();
@@ -100,7 +100,7 @@ export default function ProductDetail() {
     const cartItem = { productId: id, qty: quantity, size: selectedSize, color: selectedColor };
 
     // fetch existing
-    const res1 = await fetch(`http://localhost:5000/api/cart/${user.id}`);
+    const res1 = await fetch(`https://e-backend-rf04.onrender.com/api/cart/${user.id}`);
     const existing = await res1.json();
 
     // merge
@@ -113,7 +113,7 @@ export default function ProductDetail() {
     else existing.push(cartItem);
 
     // persist
-    await fetch(`http://localhost:5000/api/cart/${user.id}`, {
+    await fetch(`https://e-backend-rf04.onrender.com/api/cart/${user.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items: existing })
@@ -176,7 +176,7 @@ export default function ProductDetail() {
         <div className="pd-gallery">
           <div className="pd-main-img">
             <img
-              src={`http://localhost:5000${images[selectedImage]}`}
+              src={`https://e-backend-rf04.onrender.com${images[selectedImage]}`}
               alt={`${title} – Main view`}
             />
             {discount > 0 && (
@@ -192,7 +192,7 @@ export default function ProductDetail() {
                 aria-label={`View image ${i + 1} of ${title}`}
               >
                 <img
-                  src={`http://localhost:5000${img}`}
+                  src={`https://e-backend-rf04.onrender.com${img}`}
                   alt={`${title} – Thumbnail ${i + 1}`}
                 />
               </button>

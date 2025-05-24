@@ -26,7 +26,7 @@ export default function Profile() {
   const [showProfile, setShowProfile] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/userdata/${id}`)
+    fetch(`https://e-backend-rf04.onrender.com/api/userdata/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
@@ -45,7 +45,7 @@ export default function Profile() {
   }, [id]);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/orders/user/${id}`)
+    fetch(`https://e-backend-rf04.onrender.com/api/orders/user/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : data.orders || [];
@@ -75,7 +75,7 @@ export default function Profile() {
     const updates = { ...form };
     if (!updates.password) delete updates.password;
 
-    fetch(`http://localhost:5000/api/userdata/${id}`, {
+    fetch(`https://e-backend-rf04.onrender.com/api/userdata/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
@@ -539,7 +539,7 @@ function ReviewForm({
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/products/${productId}/reviews`,
+        `https://e-backend-rf04.onrender.com/api/products/${productId}/reviews`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

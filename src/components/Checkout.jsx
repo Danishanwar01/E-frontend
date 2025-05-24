@@ -24,7 +24,7 @@ export default function Checkout() {
         let items = Array.isArray(state) ? state : [];
         if (!Array.isArray(state)) {
           const userRes = JSON.parse(localStorage.getItem('user') || '{}');
-          const res     = await fetch(`http://localhost:5000/api/cart/${userRes.id}`);
+          const res     = await fetch(`https://e-backend-rf04.onrender.com/api/cart/${userRes.id}`);
           items         = await res.json();
         }
         setCartItems(items);
@@ -105,7 +105,7 @@ export default function Checkout() {
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch('https://e-backend-rf04.onrender.com/api/orders', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload)
@@ -114,7 +114,7 @@ export default function Checkout() {
 
       // If this was not a “Buy Now” flow, clear the cart in backend
       if (!Array.isArray(state)) {
-        await fetch(`http://localhost:5000/api/cart/${userRes.id}`, {
+        await fetch(`https://e-backend-rf04.onrender.com/api/cart/${userRes.id}`, {
           method:  'PUT',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ items: [] })
@@ -186,7 +186,7 @@ export default function Checkout() {
                 key={`${item.productId}-${item.size || ''}-${item.color || ''}`}
               >
                 <img 
-                  src={`http://localhost:5000${p.images[0]}`}
+                  src={`https://e-backend-rf04.onrender.com${p.images[0]}`}
                   alt={p.title}
                   width={50}
                 />

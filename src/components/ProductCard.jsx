@@ -4,7 +4,7 @@ import '../styles/ProductCard.css';
 
 export default function ProductCard({ product }) {
   const imageUrl = product.images?.[0]
-    ? `http://localhost:5000${product.images[0]}`
+    ? `https://e-backend-rf04.onrender.com${product.images[0]}`
     : 'https://via.placeholder.com/300x400';
   const discountedPrice = product.discount
     ? (product.price * (1 - product.discount / 100)).toFixed(2)

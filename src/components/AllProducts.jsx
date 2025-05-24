@@ -238,7 +238,7 @@ export default function AllProductsPage() {
         {currentProducts.length ? (
           currentProducts.map(prod => {
             const imgUrl = prod.images?.[0]
-              ? `http://localhost:5000${prod.images[0]}`
+              ? `https://e-backend-rf04.onrender.com${prod.images[0]}`
               : require('../assets/images/product-1.png');
 
             const discountedPrice =

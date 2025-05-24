@@ -158,7 +158,7 @@ export default function Jackets() {
           {items.map((prod, idx) => {
             console.log('[DEBUG] rendering product:', prod);
             const imgUrl = prod.images?.[0]
-              ? `http://localhost:5000${prod.images[0]}`
+              ? `https://e-backend-rf04.onrender.com${prod.images[0]}`
               : require('../assets/images/product-1.png');
             return (
               <SwiperSlide key={prod._id}>
