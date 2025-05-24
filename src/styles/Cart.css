@@ -7,7 +7,8 @@
   padding: 0 1rem;
   font-family: 'Segoe UI', Arial, sans-serif;
   background-color: rgb(255, 255, 255);
-  border: 2px solid black;
+  /* border: 2px solid black; */
+  border-radius: 10px;
 }
 
 .cart-page h1 {
@@ -173,13 +174,23 @@
 }
 
 .back-btn {
-  background: none;
-  border: none;
-  color: #000;
-  cursor: pointer;
+  background: rgb(255, 255, 255);
+  border:2px solid black;
+  border-radius: 50%;
+  width: 30px;
+  color:#000000;
   font-size: 1rem;
   margin-bottom: 2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-top: 1rem;
 }
+.back-btn:hover {
+  color: rgb(255, 255, 255);
+  background-color: #000000;
+  border-radius: 50%;
+}
+
 
 .empty-cart {
   text-align: center;

@@ -1,0 +1,128 @@
+/* NavBar.css */
+
+.navbar-custom {
+  position: relative;
+
+  z-index: 2000;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+ .dropdown-menu .dropdown-item:hover{
+ background: #fff;
+
+}
+
+/* ----------------------------------------- */
+/* MOBILE & TABLET (width: 320px to 900px): toggle, brand centered, icons right */
+/* ----------------------------------------- */
+
+.navbar-custom .navbar-brand {
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #142b1f;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  pointer-events: none; 
+}
+
+.navbar-custom .navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+  z-index: 2100; 
+}
+
+.navbar-custom .nav-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-custom .nav-icon-link {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  position: relative;
+  text-decoration: none;
+  margin-left: 1rem;
+}
+
+.navbar-custom .nav-icon-link img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) saturate(100%);
+}
+
+.navbar-custom .cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #2a2a2a;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* adjust brand font-size for smaller screens */
+@media (max-width: 480px) {
+  .navbar-custom .navbar-brand {
+    font-size: 1.25rem;
+  }
+  .navbar-custom .nav-icon-link img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ----------------------------------------- */
+/* TABLET (width: 600px to 900px): slightly larger brand and icons, but still centered */
+/* ----------------------------------------- */
+@media (min-width: 600px) and (max-width: 900px) {
+  .navbar-custom .navbar-brand {
+    font-size: 1.75rem;
+  }
+  .navbar-custom .nav-icon-link img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ----------------------------------------- */
+/* DESKTOP (≥ 992px): brand left, toggler hidden, menu horizontal */
+/* ----------------------------------------- */
+@media (min-width: 992px) {
+  /* Hide the toggler on large screens */
+  .navbar-custom .navbar-toggler {
+    display: none;
+
+  }
+
+  /* Reposition the brand into normal flow (left-aligned) */
+  .navbar-custom .navbar-brand {
+    position: static;
+    transform: none;
+    pointer-events: auto;
+    margin-left: 0;
+  }
+
+  /* Center menu items in desktop */
+  .navbar-custom .navbar-collapse {
+    justify-content: center;
+  }
+
+  /* Icons remain aligned to the right */
+  .navbar-custom .nav-icons {
+    margin-left: auto;
+  }
+}

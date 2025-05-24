@@ -8,7 +8,7 @@ export default function SocialComponent() {
      <>
      
       {/* Footer */}
-      <footer className="footer bg-white border-top py-4">
+      <footer className="footer  border-top py-4">
         <div className="container">
           <div className="row">
             <div className="col-md-4 mb-3">
@@ -29,9 +29,9 @@ export default function SocialComponent() {
                 <div className="col-4">
                   <h6 className="small fw-bold">Support</h6>
                   <ul className="list-unstyled">
-                    <li><a href="#" className="text-dark small">Contact</a></li>
-                    <li><a href="#" className="text-dark small">FAQs</a></li>
-                    <li><a href="#" className="text-dark small">Returns</a></li>
+                    <li><a href="/contact" className="text-dark small">Contact</a></li>
+                    <li><a href="/services" className="text-dark small">Services</a></li>
+                    <li><a href="/blog" className="text-dark small">Blog</a></li>
                   </ul>
                 </div>
                 <div className="col-4">

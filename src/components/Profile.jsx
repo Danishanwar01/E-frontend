@@ -1,11 +1,9 @@
-// src/pages/Profile.js
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../styles/Auth.css"; 
+import "../styles/Auth.css";
 
 export default function Profile() {
-  const { id } = useParams();         // userId from route
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
@@ -17,44 +15,54 @@ export default function Profile() {
     country: "",
     postalCode: "",
     phone: "",
+    avatarUrl: "",
   });
   const [message, setMessage] = useState("");
+
   const [orders, setOrders] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
-  // Dropdown state
   const [showProfile, setShowProfile] = useState(true);
-  const [showOrders, setShowOrders] = useState(true);
 
-  // 1) Load profile info
   useEffect(() => {
     fetch(`http://localhost:5000/api/userdata/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
-        setForm({
+        setForm((prev) => ({
+          ...prev,
           name: data.name || "",
-          password: "",
           address: data.address || "",
           city: data.city || "",
           country: data.country || "",
           postalCode: data.postalCode || "",
           phone: data.phone || "",
-        });
+          avatarUrl: data.avatarUrl || "",
+        }));
       })
       .catch(console.error);
   }, [id]);
 
-  // 2) Load orders (user-specific)
   useEffect(() => {
     fetch(`http://localhost:5000/api/orders/user/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : data.orders || [];
-        setOrders(arr);
+        // Ensure every item has reviewSubmitted flag
+        const normalized = arr.map((order) => {
+          if (Array.isArray(order.items)) {
+            const itemsWithFlag = order.items.map((item) => ({
+              ...item,
+              reviewSubmitted: item.reviewSubmitted || false,
+            }));
+            return { ...order, items: itemsWithFlag };
+          }
+          return order;
+        });
+        setOrders(normalized);
       })
-      .catch((err) => {
-        console.error("Fetch orders error:", err);
-      });
+      .catch((err) => console.error("Fetch orders error:", err));
   }, [id]);
 
   const handleChange = (e) => {
@@ -84,6 +92,19 @@ export default function Profile() {
       });
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const localUrl = URL.createObjectURL(file);
+    setForm((prev) => ({ ...prev, avatarUrl: localUrl }));
+    // अगर आप सर्वर पर अपलोड करना चाहते हैं, तो वहाँ भी logic डालें
+  };
+
+  const handleFilterClick = (status) => {
+    setFilterStatus(status);
+    setExpandedOrder(null);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
@@ -93,234 +114,355 @@ export default function Profile() {
     return <p className="loading-text">Loading profile…</p>;
   }
 
+  const filteredOrders = orders.filter((order) => {
+    if (filterStatus === "All") return true;
+    return order.status === filterStatus;
+  });
+
   return (
     <div className="profile-container">
       {/* ------------------------------------------------------------
-          LEFT: Profile dropdown
+         LEFT: Profile Section
          ------------------------------------------------------------ */}
       <section className="profile-section">
-        <div className="dropdown-panel">
-          <button
-            className="dropdown-header"
-            onClick={() => setShowProfile((prev) => !prev)}
-          >
-            <span>My Profile</span>
-            <span className={`arrow ${showProfile ? "open" : ""}`} />
-          </button>
-          {showProfile && (
-            <div className="dropdown-content">
-              <div className="profile-card">
-                <form className="profile-form" onSubmit={handleUpdate}>
-                  {/* Full Name */}
-                  <div className="form-group">
-                    <label htmlFor="name">Full Name</label>
-                    <input
-                      className="input"
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={form.name}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Email (read-only) */}
-                  <div className="form-group">
-                    <label htmlFor="email">Email (read-only)</label>
-                    <input
-                      className="input"
-                      id="email"
-                      type="email"
-                      value={user.email}
-                      readOnly
-                    />
-                  </div>
-
-                  {/* Address */}
-                  <div className="form-group">
-                    <label htmlFor="address">Address</label>
-                    <input
-                      className="input"
-                      id="address"
-                      name="address"
-                      type="text"
-                      value={form.address}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* City */}
-                  <div className="form-group">
-                    <label htmlFor="city">City</label>
-                    <input
-                      className="input"
-                      id="city"
-                      name="city"
-                      type="text"
-                      value={form.city}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Country */}
-                  <div className="form-group">
-                    <label htmlFor="country">Country</label>
-                    <input
-                      className="input"
-                      id="country"
-                      name="country"
-                      type="text"
-                      value={form.country}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Postal Code */}
-                  <div className="form-group">
-                    <label htmlFor="postalCode">Postal Code</label>
-                    <input
-                      className="input"
-                      id="postalCode"
-                      name="postalCode"
-                      type="text"
-                      value={form.postalCode}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* Phone */}
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      className="input"
-                      id="phone"
-                      name="phone"
-                      type="text"
-                      value={form.phone}
-                      onChange={handleChange}
-                    />
-                  </div>
-
-                  {/* New Password */}
-                  <div className="form-group">
-                    <label htmlFor="password">New Password</label>
-                    <input
-                      className="input"
-                      id="password"
-                      name="password"
-                      type="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="(Leave blank to keep old)"
-                    />
-                  </div>
-
-                  <button type="submit" className="btn btn-primary">
-                    Update Profile
-                  </button>
-                  {message && <p className="form-message">{message}</p>}
-                </form>
-
-                <button className="btn btn-logout" onClick={handleLogout}>
-                  Logout
-                </button>
+        <div className="dashboard-card">
+          {/* User Header (Avatar + Greeting + Logout) */}
+          <div className="user-header">
+            <div className="avatar-wrapper">
+              <div className="user-avatar">
+                {form.avatarUrl ? (
+                  <img
+                    src={form.avatarUrl}
+                    alt="Avatar"
+                    className="avatar-image"
+                  />
+                ) : (
+                  // user?.name से पहले चेक कर रहे हैं कि name मौजूद है या नहीं
+                  <span className="avatar-placeholder">
+                    {user.name ? user.name.charAt(0).toUpperCase() : ""}
+                  </span>
+                )}
               </div>
+              <button
+                className="edit-avatar-btn"
+                onClick={() =>
+                  document.getElementById("avatar-input").click()
+                }
+              >
+                ✎
+              </button>
+              <input
+                type="file"
+                id="avatar-input"
+                hidden
+                accept="image/*"
+                onChange={handleAvatarChange}
+              />
             </div>
-          )}
+            <div className="greeting-logout-wrapper">
+              {/* यहाँ भी user.name.split से पहले चेक कर लीजिए */}
+              <h2 className="user-greeting">
+                Welcome Back, {user.name ? user.name.split(" ")[0] : "User"}!
+              </h2>
+              <button className="btn-logout" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------
+             Account Settings Accordion
+             ------------------------------------------------------------ */}
+          <div className="accordion">
+            <div className="accordion-item">
+              <button
+                className="accordion-header"
+                onClick={() => setShowProfile(!showProfile)}
+              >
+                <span>🛠 Account Settings</span>
+                <span
+                  className={`accordion-icon ${showProfile ? "open" : ""}`}
+                >
+                  ▼
+                </span>
+              </button>
+              {showProfile && (
+                <div className="accordion-content">
+                  <form className="profile-form" onSubmit={handleUpdate}>
+                    <div className="form-grid">
+                      {/* Full Name */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">👤</span>
+                          Full Name
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="name"
+                          value={form.name}
+                          onChange={handleChange}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+
+                      {/* Address */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">🏠</span>
+                          Address
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="address"
+                          value={form.address}
+                          onChange={handleChange}
+                          placeholder="Enter your address"
+                        />
+                      </div>
+
+                      {/* City */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">🌆</span>
+                          City
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="city"
+                          value={form.city}
+                          onChange={handleChange}
+                          placeholder="Enter your city"
+                        />
+                      </div>
+
+                      {/* Country */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">🌍</span>
+                          Country
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="country"
+                          value={form.country}
+                          onChange={handleChange}
+                          placeholder="Enter your country"
+                        />
+                      </div>
+
+                      {/* Postal Code */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">📮</span>
+                          Postal Code
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="postalCode"
+                          value={form.postalCode}
+                          onChange={handleChange}
+                          placeholder="Enter postal code"
+                        />
+                      </div>
+
+                      {/* Phone */}
+                      <div className="form-group">
+                        <label className="input-label">
+                          <span className="label-icon">📞</span>
+                          Phone
+                        </label>
+                        <input
+                          className="modern-input"
+                          name="phone"
+                          value={form.phone}
+                          onChange={handleChange}
+                          placeholder="Enter phone number"
+                        />
+                      </div>
+
+                      {/* New Password (Full Width) */}
+                      <div className="form-group full-width">
+                        <label className="input-label">
+                          <span className="label-icon">🔒</span>
+                          New Password
+                        </label>
+                        <input
+                          className="modern-input"
+                          type="password"
+                          name="password"
+                          value={form.password}
+                          onChange={handleChange}
+                          placeholder="••••••••"
+                        />
+                      </div>
+                    </div>
+
+                    <button className="gradient-btn update-btn" type="submit">
+                      💾 Update Profile
+                    </button>
+                    {message && <p className="form-message">{message}</p>}
+                  </form>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ------------------------------------------------------------
-          RIGHT: Orders dropdown (with scrollable order cards)
+         RIGHT: Orders Section
          ------------------------------------------------------------ */}
       <section className="orders-section">
-        <div className="dropdown-panel">
-          <button
-            className="dropdown-header"
-            onClick={() => setShowOrders((prev) => !prev)}
-          >
-            <span>My Orders</span>
-            <span className={`arrow ${showOrders ? "open" : ""}`} />
-          </button>
-          {showOrders && (
-            <div className="dropdown-content">
-              <div className="orders-card">
-                {orders.length === 0 ? (
-                  <p className="no-orders">No past orders.</p>
-                ) : (
-                  orders.map((order, idx) => {
-                    // Each order
-                    const itemsArray = Array.isArray(order.items) ? order.items : [];
-                    return (
-                      <div className="order-card" key={order._id || idx}>
-                        {/* Header: Order # and Amount */}
-                        <div className="order-header">
-                          <h3>Order #{idx + 1}</h3>
-                          <span className="order-amount">
-                            ₹{order.totalAmount.toFixed(2)}
-                          </span>
-                        </div>
+        <div className="dashboard-card">
+          <div className="orders-header">
+            <h2>📦 Order History</h2>
+            <div className="status-filter">
+              {["All", "Processing", "Shipped", "Delivered"].map((status) => (
+                <button
+                  key={status}
+                  className={`filter-btn ${
+                    filterStatus === status ? "active" : ""
+                  }`}
+                  onClick={() => handleFilterClick(status)}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          </div>
 
-                        {/* Meta: ID, date, status, courier, tracking # */}
-                        <p className="order-meta">
-                          <strong>Order ID:</strong> {order._id} <br />
-                          <strong>Placed:</strong>{" "}
-                          {new Date(order.createdAt).toLocaleString()} <br />
-                          {order.status && (
-                            <>
-                              <strong>Status:</strong> {order.status} <br />
-                            </>
+          <div className="orders-list">
+            {filteredOrders.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">📭</div>
+                <p>No orders found</p>
+              </div>
+            ) : (
+              filteredOrders.map((order, idx) => (
+                <div
+                  className={`order-card ${
+                    order.status.toLowerCase() || "processing"
+                  }`}
+                  key={order._id || idx}
+                >
+                  {/* Order Header */}
+                  <div className="order-header">
+                    <div className="order-meta">
+                      <span className="order-number">ORDER #{idx + 1}</span>
+                      <span className="order-date">
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div
+                      className={`status-badge ${
+                        order.status.toLowerCase()
+                      }`}
+                    >
+                      {order.status}
+                    </div>
+                  </div>
+
+                  {/* Order Body (Thumbnail + Summary) */}
+                  <div className="order-body">
+                    <div className="product-preview">
+                      {order.items.slice(0, 3).map((item, i) => (
+                        <div className="product-thumb" key={i}>
+                          {item.productId?.image ? (
+                            <img
+                              src={item.productId.image}
+                              alt={item.productId.title}
+                              className="thumb-image"
+                            />
+                          ) : (
+                            <div className="image-placeholder">🖼</div>
                           )}
-                          <strong>Courier:</strong> {order.courierPartner || "—"} <br />
-                          <strong>Tracking #:</strong> {order.trackingNumber || "—"} <br />
-                        </p>
+                        </div>
+                      ))}
+                    </div>
 
-                        {/* Shipping Info */}
-                        {order.shipping && (
-                          <div className="order-shipping">
-                            <strong>Ship To:</strong> {order.shipping.address}, {order.shipping.city}, {order.shipping.country} (PIN {order.shipping.postalCode})
-                          </div>
-                        )}
+                    <div className="order-summary">
+                      <div className="summary-item">
+                        <span>Items</span>
+                        <span>{order.items.length}</span>
+                      </div>
+                      <div className="summary-item">
+                        <span>Product</span>
+                        <span>
+                          {order.items[0]?.productId?.title
+                            ? order.items[0].productId.title
+                            : "—"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                        {/* Items list */}
-                        {itemsArray.length === 0 ? (
-                          <p className="no-items">No items in this order.</p>
-                        ) : (
-                          <ul className="item-list">
-                            {itemsArray.map((it, j) => {
-                              const product = it.productId; // populated in backend
-                              const title = product?.title || "(Unknown Product)";
-                              const alreadyReviewed = Boolean(it.reviewSubmitted); 
-                              // `it.reviewSubmitted` is a flag you should set on backend 
-                              // once the user submits a review for this item.
+                  {/* Order Footer (Details Toggle + Review Button) */}
+                  <div className="order-footer">
+                    <button
+                      className="detail-btn"
+                      onClick={() =>
+                        setExpandedOrder(
+                          expandedOrder === order._id ? null : order._id
+                        )
+                      }
+                    >
+                      {expandedOrder === order._id
+                        ? "▲ Collapse"
+                        : "▼ Details"}
+                    </button>
 
-                              return (
-                                <li className="item-row" key={j}>
-                                  <div className="item-main">
-                                    <span className="item-name">{title}</span>
-                                    <span className="item-details">
-                                      ×{it.qty}
-                                      {it.size && `, Size: ${it.size}`}
-                                      {it.color && `, Color: ${it.color}`}
-                                    </span>
-                                  </div>
+                    {order.status === "Delivered" && (
+                      <button className="review-btn">⭐ Leave Review</button>
+                    )}
+                  </div>
 
-                                  {/* If order is delivered AND this item isn't reviewed yet, show ReviewForm */}
-                                  {order.status === "Delivered" && !alreadyReviewed && (
-                                    <ReviewForm 
+                  {/* Expanded Order Details */}
+                  {expandedOrder === order._id && (
+                    <div className="order-details">
+                      {Array.isArray(order.items) &&
+                      order.items.length > 0 ? (
+                        <ul className="item-list-expanded">
+                          {order.items.map((it, j) => {
+                            const product = it.productId;
+                            const title =
+                              product?.title || "(Unknown Product)";
+                            const alreadyReviewed = Boolean(
+                              it.reviewSubmitted
+                            );
+
+                            return (
+                              <li className="item-row-expanded" key={j}>
+                                <div className="item-main-expanded">
+                                  <span className="item-name-expanded">
+                                    {title}
+                                  </span>
+                                  <span className="item-details-expanded">
+                                    ×{it.qty}
+                                    {it.size && `, Size: ${it.size}`}
+                                    {it.color && `, Color: ${it.color}`}
+                                  </span>
+                                </div>
+
+                                {order.status === "Delivered" &&
+                                  !alreadyReviewed && (
+                                    <ReviewForm
                                       userId={id}
                                       productId={product?._id}
                                       orderItemIndex={j}
                                       orderId={order._id}
                                       onReviewSubmitted={() => {
-                                        // Mark locally that this item is reviewed
-                                        setOrders(prevOrders =>
-                                          prevOrders.map(o => {
+                                        setOrders((prevOrders) =>
+                                          prevOrders.map((o) => {
                                             if (o._id !== order._id) return o;
-                                            const newItems = o.items.map((item, k) => {
-                                              if (k !== j) return item;
-                                              return { ...item, reviewSubmitted: true };
-                                            });
+                                            const newItems = o.items.map(
+                                              (item, k) => {
+                                                if (k !== j) return item;
+                                                return {
+                                                  ...item,
+                                                  reviewSubmitted: true,
+                                                };
+                                              }
+                                            );
                                             return { ...o, items: newItems };
                                           })
                                         );
@@ -328,39 +470,63 @@ export default function Profile() {
                                     />
                                   )}
 
-                                  {/* If already reviewed, show a "Thanks for your review!" note */}
-                                  {order.status === "Delivered" && alreadyReviewed && (
-                                    <p className="review-thankyou">Thanks for your review!</p>
+                                {order.status === "Delivered" &&
+                                  alreadyReviewed && (
+                                    <p className="review-thankyou-expanded">
+                                      Thanks for your review!
+                                    </p>
                                   )}
-                                </li>
-                              );
-                            })}
-                          </ul>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <p className="no-items-expanded">
+                          No items in this order.
+                        </p>
+                      )}
+
+                      {Array.isArray(order.tracking) &&
+                        order.tracking.length > 0 && (
+                          <TrackingTimeline events={order.tracking} />
                         )}
 
-                        {/* Tracking Timeline */}
-                        {Array.isArray(order.tracking) &&
-                          order.tracking.length > 0 && (
-                            <TrackingTimeline events={order.tracking} />
+                      <p className="detail-text-expanded">
+                        <strong>Order ID:</strong> {order._id} <br />
+                        <strong>Courier:</strong> {order.courierPartner || "—"}{" "}
+                        <br />
+                        <strong>Tracking #:</strong>{" "}
+                        {order.trackingNumber || "—"} <br />
+                        {order.shipping && (
+                          <>
+                            <strong>Ship To:</strong> {order.shipping.address},{" "}
+                            {order.shipping.city}, {order.shipping.country} (PIN{" "}
+                            {order.shipping.postalCode}) <br />
+                          </>
                         )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          )}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </section>
     </div>
   );
 }
 
-
 // ------------------------------------------------------
-// ReviewForm component (embedded in Profile.js)
+// ReviewForm Component
 // ------------------------------------------------------
-function ReviewForm({ userId, productId, orderId, orderItemIndex, onReviewSubmitted }) {
+function ReviewForm({
+  userId,
+  productId,
+  orderId,
+  orderItemIndex,
+  onReviewSubmitted,
+}) {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -372,13 +538,22 @@ function ReviewForm({ userId, productId, orderId, orderItemIndex, onReviewSubmit
     setError("");
 
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${productId}/reviews`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, rating, comment, orderId, orderItemIndex })
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/products/${productId}/reviews`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId,
+            rating,
+            comment,
+            orderId,
+            orderItemIndex,
+          }),
+        }
+      );
       if (!res.ok) throw new Error("Failed to submit review.");
-      await res.json(); // assume returns the new review
+      await res.json();
       onReviewSubmitted();
     } catch (err) {
       console.error(err);
@@ -389,13 +564,14 @@ function ReviewForm({ userId, productId, orderId, orderItemIndex, onReviewSubmit
   };
 
   return (
-    <form className="review-form" onSubmit={handleSubmitReview}>
-      <div className="review-group">
-        <label>Rating:</label>
-        <select 
-          value={rating} 
+    <form className="review-form-expanded" onSubmit={handleSubmitReview}>
+      <div className="review-group-expanded">
+        <label className="review-label">Rating:</label>
+        <select
+          value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
           disabled={submitting}
+          className="review-select-expanded"
         >
           <option value={5}>★★★★★</option>
           <option value={4}>★★★★☆</option>
@@ -405,30 +581,33 @@ function ReviewForm({ userId, productId, orderId, orderItemIndex, onReviewSubmit
         </select>
       </div>
 
-      <div className="review-group">
-        <label>Comment:</label>
+      <div className="review-group-expanded">
+        <label className="review-label">Comment:</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Write your review…"
           rows={3}
           disabled={submitting}
+          className="review-textarea-expanded"
         />
       </div>
 
-      {error && <p className="review-error">{error}</p>}
+      {error && <p className="review-error-expanded">{error}</p>}
 
-      <button type="submit" className="btn btn-submit-review" disabled={submitting}>
+      <button
+        type="submit"
+        className="btn-submit-review-expanded"
+        disabled={submitting}
+      >
         {submitting ? "Submitting…" : "Submit Review"}
       </button>
     </form>
   );
 }
 
-
-
 // ------------------------------------------------------
-// TrackingTimeline (same as before)
+// TrackingTimeline Component
 // ------------------------------------------------------
 function TrackingTimeline({ events }) {
   const formatTimestamp = (isoString) => {
@@ -446,8 +625,18 @@ function TrackingTimeline({ events }) {
     const dayWithSuffix = `${day}${suffix}`;
 
     const monthNames = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     const month = monthNames[d.getMonth()];
 
@@ -460,20 +649,20 @@ function TrackingTimeline({ events }) {
     const timeString = `${hours}:${minutes}${ampm}`;
 
     const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
-    return `${weekday}, ${dayWithSuffix} ${month} ’${yearShort} – ${timeString}`;
+    return `${weekday}, ${dayWithSuffix} ${month} ’${yearShort} – ${timeString}`;
   };
 
   return (
-    <div className="timeline">
+    <div className="timeline-expanded">
       {events.map((ev, i) => (
-        <div className="timeline-item" key={i}>
-          <span className="timeline-dot" />
-          <div className="timeline-content">
-            <h4 className="timeline-status">{ev.status}</h4>
-            <p className="timeline-message">
+        <div className="timeline-item-expanded" key={i}>
+          <span className="timeline-dot-expanded" />
+          <div className="timeline-content-expanded">
+            <h4 className="timeline-status-expanded">{ev.status}</h4>
+            <p className="timeline-message-expanded">
               {ev.message || "No message available"}
             </p>
-            <p className="timeline-timestamp">
+            <p className="timeline-timestamp-expanded">
               {formatTimestamp(ev.timestamp)}
             </p>
           </div>

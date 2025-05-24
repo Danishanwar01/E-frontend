@@ -143,6 +143,7 @@ export default function Checkout() {
       <div className="order-success">
         <h2>Order Placed Successfully! 🎉</h2>
         <h3>Track Order In Your Profile</h3>
+        <h5>We Provide your Shipping Details And Tracking Id Shortly</h5>
         <button onClick={() => navigate('/')}>Continue Shopping</button>
         <button onClick={() => navigate(`/profile/${userRes.id}`)}>
           Track Your Order
@@ -163,6 +164,9 @@ export default function Checkout() {
 
   return (
     <div className="checkout-container">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+        ← 
+      </button>
       <h1>Checkout</h1>
       <div className="checkout-grid">
         {/* Order Summary */}

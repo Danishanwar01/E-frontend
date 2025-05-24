@@ -1,92 +1,16 @@
-// src/components/NavBar.jsx
 import React, { useState, useEffect } from 'react';
-import { Link }                from 'react-router-dom';
-import { fetchCategories }     from '../api/categories';
-import userIcon                from '../assets/images/user.svg';
-import cartIcon                from '../assets/images/cart.svg';
-
-const styles = {
-  customNavbar: {
-    position: 'relative',
-    zIndex: 2000,
-    padding: '1rem 0',
-    background: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(10px)',
-    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.05)',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-    overflow: 'visible',
-  },
-  brandText: {
-    fontSize: '1.5rem',
-    fontWeight: 600,
-    color: '#2a2a2a',
-    letterSpacing: '-0.5px',
-    textDecoration: 'none',
-  },
-  navLink: {
-    color: '#444',
-    fontWeight: 500,
-    padding: '0.5rem 1rem',
-    transition: 'all 0.2s ease',
-    textDecoration: 'none',
-  },
-  dropdownMenu: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    zIndex: 2001,
-    border: 'none',
-    boxShadow: '0 5px 15px rgba(0, 0, 0, 0.08)',
-    marginTop: '0.5rem',
-    background: '#fff',
-    minWidth: '12rem',
-  },
-  dropdownItem: {
-    padding: '0.75rem 1.5rem',
-    color: '#555',
-    transition: 'all 0.2s ease',
-    textDecoration: 'none',
-    display: 'block',
-  },
-  iconLink: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0.25rem',
-    position: 'relative',
-    textDecoration: 'none',
-  },
-  navIcon: {
-    width: '22px',
-    height: '22px',
-    transition: 'transform 0.2s ease',
-    filter: 'brightness(0) saturate(100%)',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: '-6px',
-    right: '-6px',
-    background: '#2a2a2a',
-    color: 'white',
-    width: '18px',
-    height: '18px',
-    borderRadius: '50%',
-    fontSize: '0.65rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navbarToggler: {
-    border: 'none',
-    padding: '0.5rem',
-  },
-};
+import { Link } from 'react-router-dom';
+import { fetchCategories } from '../api/categories';
+import userIcon from '../assets/images/user.svg';
+import cartIcon from '../assets/images/cart.svg';
+import '../styles/Navbar.css';
 
 export default function Navbar() {
-  const [user,      setUser]      = useState(null);
-  const [cats,      setCats]      = useState([]);
+  const [user, setUser] = useState(null);
+  const [cats, setCats] = useState([]);
   const [cartCount, setCartCount] = useState(0);
 
-  // Sync user
+  // Sync user state from localStorage
   useEffect(() => {
     const syncUser = () => {
       const stored = localStorage.getItem('user');
@@ -113,17 +37,17 @@ export default function Navbar() {
       .catch(console.error);
   }, []);
 
-  // Cart count (server if logged in, else local)
+  // Compute cart count
   useEffect(() => {
     async function loadCount() {
       if (user?.id) {
         try {
-          const res   = await fetch(`http://localhost:5000/api/cart/${user.id}`);
+          const res = await fetch(`http://localhost:5000/api/cart/${user.id}`);
           const items = await res.json();
           setCartCount(items.reduce((sum, i) => sum + (i.qty || 0), 0));
           return;
         } catch {
-          // fallback
+          // fallback to localStorage
         }
       }
       const stored = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -134,79 +58,141 @@ export default function Navbar() {
     return () => window.removeEventListener('storage', loadCount);
   }, [user]);
 
+  // Auto-close collapse on link click (mobile)
+  const handleNavItemClick = () => {
+    const collapseEl = document.getElementById('navbarContent');
+    if (collapseEl && collapseEl.classList.contains('show')) {
+      collapseEl.classList.remove('show');
+    }
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg" style={styles.customNavbar}>
-      <div className="container">
-        <Link to="/" style={styles.brandText}>Raah</Link>
+    <nav className="navbar navbar-expand-lg navbar-custom">
+      <div className="container d-flex align-items-center position-relative">
+        {/* Toggler (visible on mobile/tablet) */}
         <button
-          className="navbar-toggler"
+          className="navbar-toggler d-lg-none"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarContent"
-          style={styles.navbarToggler}
         >
           <span className="navbar-toggler-icon" />
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarContent">
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-            <li className="nav-item">
-              <Link to="/" style={styles.navLink}>Home</Link>
-            </li>
+        {/* Brand: centered on mobile/tablet, left on desktop */}
+        <Link to="/" className="navbar-brand">
+          RAAH
+        </Link>
 
+        {/* Collapsible menu items: for desktop, appear inline; on mobile, dropdown */}
+        <div className="collapse navbar-collapse" id="navbarContent">
+          <ul className="navbar-nav mx-auto mb-2 mb-lg-0 align-items-center">
+            <li className="nav-item">
+              <Link to="/" className="nav-link" onClick={handleNavItemClick} >
+                Home
+              </Link>
+            </li>
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                role="button"
+                aria-expanded="false"
+               
+              >
                 Shop
               </a>
-              <ul className="dropdown-menu" style={styles.dropdownMenu}>
-                <li><Link to="/all-products" style={styles.dropdownItem}>All</Link></li>
-                <li><Link to="/all-products?gender=Men" style={styles.dropdownItem}>Men</Link></li>
-                <li><Link to="/all-products?gender=Women" style={styles.dropdownItem}>Women</Link></li>
+              <ul className="dropdown-menu" >
+                <li>
+                  <Link to="/all-products" className="dropdown-item" onClick={handleNavItemClick}>
+                    All
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/all-products?gender=Men" className="dropdown-item" onClick={handleNavItemClick}>
+                    Men
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/all-products?gender=Women" className="dropdown-item" onClick={handleNavItemClick}>
+                    Women
+                  </Link>
+                </li>
               </ul>
             </li>
-
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                role="button"
+                aria-expanded="false"
+                
+              >
                 Category
               </a>
-              <ul className="dropdown-menu" style={styles.dropdownMenu}>
+              <ul className="dropdown-menu">
                 {cats.map(cat => (
                   <li key={cat._id}>
-                    <Link to={`/all-products?category=${cat._id}`} style={styles.dropdownItem}>
+                    <Link
+                      to={`/all-products?category=${cat._id}`}
+                      className="dropdown-item"
+                      onClick={handleNavItemClick}
+                    >
                       {cat.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </li>
-
             <li className="nav-item dropdown">
-              <a href="#!" className="nav-link dropdown-toggle" data-bs-toggle="dropdown" style={styles.navLink}>
+              <a
+                href="#!"
+                className="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                role="button"
+                aria-expanded="false"
+              
+              >
                 About
               </a>
-              <ul className="dropdown-menu" style={styles.dropdownMenu}>
-                <li><Link to="/services" style={styles.dropdownItem}>Services</Link></li>
-                <li><Link to="/blog"     style={styles.dropdownItem}>Blog</Link></li>
-                <li><Link to="/contact"  style={styles.dropdownItem}>Contact</Link></li>
+              <ul className="dropdown-menu">
+                <li>
+                  <Link to="/services" className="dropdown-item" onClick={handleNavItemClick}>
+                    Services
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/blog" className="dropdown-item" onClick={handleNavItemClick}>
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="dropdown-item" onClick={handleNavItemClick}>
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </li>
-
-            <li className="d-flex align-items-center ms-lg-4">
-              <Link
-                to={user ? `/profile/${user.id}` : '/login'}
-                className="ms-3"
-                style={styles.iconLink}
-                title={user ? `Hello, ${user.name}` : 'Login'}
-              >
-                <img src={userIcon} alt="User" style={styles.navIcon} />
-              </Link>
-
-              <Link to="/cart" className="ms-3 position-relative" style={styles.iconLink}>
-                <img src={cartIcon} alt="Cart" style={styles.navIcon} />
-                {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
-              </Link>
-            </li>
           </ul>
+        </div>
+
+        {/* User + Cart icons: always on the right for all sizes */}
+        <div className="nav-icons">
+          <Link
+            to={user ? `/profile/${user.id}` : '/login'}
+            className="nav-icon-link"
+            title={user ? `Hello, ${user.name}` : 'Login'}
+            
+          >
+            <img src={userIcon} alt="User" />
+          </Link>
+
+          <Link to="/cart" className="nav-icon-link" >
+            <img src={cartIcon} alt="Cart"  />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          </Link>
         </div>
       </div>
     </nav>

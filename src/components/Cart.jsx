@@ -105,7 +105,7 @@ export default function Cart() {
   return (
     <div className="cart-page">
       <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Back
+        ← 
       </button>
       <h1 className="cart-title">Products in Cart {totalCount}</h1>
 

@@ -16,7 +16,7 @@
   margin-right: .5rem;
   padding: 0 1.5rem;
 background-color: #fff;
-border: 2px solid black;
+/* border: 2px solid black; */
 }
 
 /* ------------------------------------------------------------
@@ -67,7 +67,7 @@ border: 2px solid black;
 
 .pd-review-rating {
   font-size: 1.2rem;
-  color: #f39c12; /* gold stars */
+  color: #f39c12; 
 }
 
 .pd-review-date {
@@ -91,7 +91,7 @@ border: 2px solid black;
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
-  pointer-events: none; /* allow clicks only on buttons */
+  pointer-events: none; 
 }
 
 .slider-btn {
@@ -127,9 +127,11 @@ border: 2px solid black;
 
 /* Back Button */
 .pd-back {
-  background: none;
-  border: none;
-  color: var(--pd-primary);
+  background: rgb(255, 255, 255);
+  border:2px solid black;
+  border-radius: 50%;
+  width: 30px;
+  color:#000000;
   font-size: 1rem;
   margin-bottom: 2rem;
   cursor: pointer;
@@ -137,7 +139,9 @@ border: 2px solid black;
   margin-top: 1rem;
 }
 .pd-back:hover {
-  color: var(--pd-accent);
+  color: rgb(255, 255, 255);
+  background-color: #000000;
+  border-radius: 50%;
 }
 
 /* Grid Layout */
@@ -149,15 +153,18 @@ border: 2px solid black;
 
 /* Gallery */
 .pd-gallery {
+ 
   position: sticky;
   top: 2rem;
   bottom: 2rem;
   border: 2px solid black;
+  border-radius: 10px;
   padding-left: 1rem;
   padding-bottom: .5rem;
   margin-bottom: 1rem;
 }
 .pd-main-img {
+   background: #fff;
   position: relative;
   background: var(--pd-light);
   border-radius: var(--pd-radius);
@@ -364,7 +371,7 @@ border: 2px solid black;
 .pd-actions .buy-now {
   background: var(--pd-accent);
   color: white;
-  background-color:rgb(182, 8, 8);
+  background-color:rgb(155, 8, 8);
 }
 .pd-actions .btn:hover {
   transform: translateY(-2px);

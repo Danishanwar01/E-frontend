@@ -207,7 +207,9 @@ a {
       height: 70%; }
 
 .why-choose-section {
-  padding: 7rem 0; }
+
+  margin-top: 1rem;
+}
   .why-choose-section .img-wrap {
     position: relative; }
     .why-choose-section .img-wrap:before {
@@ -226,11 +228,18 @@ a {
       border-radius: 20px; }
 
 .feature {
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  border: 2px solid black;
+  border-radius: 4px;
+}
+  
   .feature .icon {
     display: inline-block;
     position: relative;
-    margin-bottom: 20px; }
+    margin-bottom: 20px; 
+    margin-top: 10px;
+    margin-left: 36%;
+  }
     .feature .icon:before {
       content: "";
       width: 33px;
@@ -242,11 +251,15 @@ a {
       bottom: 0; }
   .feature h3 {
     font-size: 14px;
-    color: #2f2f2f; }
+    color: #000000;
+    text-align: center;
+  }
   .feature p {
     font-size: 14px;
     line-height: 22px;
-    color: #6a6a6a; }
+    color: #000000;
+    
+  }
 
 .we-help-section {
   padding: 7rem 0; }
@@ -445,7 +458,8 @@ a {
   padding: 7rem 0 12rem 0 !important; }
 
 .blog-section {
-  padding: 7rem 0 12rem 0; }
+    margin-top: 2rem;
+}
   .blog-section .post-entry a {
     text-decoration: none; }
   .blog-section .post-entry .post-thumbnail {
@@ -558,7 +572,9 @@ a {
       font-size: 14px !important; }
 
 .untree_co-section {
-  padding: 7rem 0; }
+  
+margin-top: 2rem;
+}
 
 .form-control {
   height: 50px;
@@ -590,9 +606,9 @@ a {
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #3b5d50;
+    background: #ffffff;
     margin-right: 20px;
-    color: #ffffff; }
+    color: #000000; }
 
 textarea {
   height: auto !important; }

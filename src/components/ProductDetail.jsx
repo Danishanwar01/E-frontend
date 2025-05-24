@@ -4,7 +4,7 @@ import { fetchProductById } from '../api/products';
 import '../styles/ProductDetail.css';
 
 export default function ProductDetail() {
-  const { id } = useParams(); // productId
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
@@ -168,7 +168,7 @@ export default function ProductDetail() {
   return (
     <div className="pd-container">
       <button className="pd-back" onClick={() => navigate(-1)}>
-        ← Back
+        ←
       </button>
 
       <div className="pd-grid">

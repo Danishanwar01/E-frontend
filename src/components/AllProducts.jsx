@@ -1,3 +1,4 @@
+// src/pages/AllProductsPage.js
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { fetchProducts } from '../api/products';
@@ -28,6 +29,7 @@ export default function AllProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 20;
 
+  // 1) Load products & categories, initialize filters from URL
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -39,7 +41,9 @@ export default function AllProductsPage() {
         const params = new URLSearchParams(location.search);
         const catParam = params.get('category') || '';
         let genderParam = (params.get('gender') || '').trim().toLowerCase();
-        genderParam = genderParam ? genderParam[0].toUpperCase() + genderParam.slice(1) : '';
+        genderParam = genderParam
+          ? genderParam[0].toUpperCase() + genderParam.slice(1)
+          : '';
 
         setState({
           products: prodRes.data,
@@ -66,40 +70,63 @@ export default function AllProductsPage() {
     loadData();
   }, [location.search]);
 
+  // 2) Apply filters & sorting whenever products, filters, or sortOrder change
   useEffect(() => {
     let tmp = [...state.products];
 
+    // 2a) Filter by category (use optional chaining)
     if (filters.category) {
-      tmp = tmp.filter(p => p.category._id === filters.category);
+      tmp = tmp.filter(p => p.category?._id === filters.category);
     }
 
+    // 2b) Filter by gender (compare to subcategory.name)
     if (filters.gender.length) {
       const want = filters.gender[0].toLowerCase();
-      tmp = tmp.filter(p => p.subcategory?.name?.toLowerCase() === want);
+      tmp = tmp.filter(
+        p => p.subcategory?.name?.toLowerCase() === want
+      );
     }
 
+    // 2c) Filter by sizes
     if (filters.size.length) {
-      tmp = tmp.filter(p => p.sizes.some(sz => filters.size.includes(sz.toUpperCase())));
+      tmp = tmp.filter(p =>
+        Array.isArray(p.sizes)
+          ? p.sizes.some(sz => filters.size.includes(sz.toUpperCase()))
+          : false
+      );
     }
 
-    if (sortOrder === 'asc') tmp.sort((a, b) => a.price - b.price);
-    else if (sortOrder === 'desc') tmp.sort((a, b) => b.price - a.price);
-    else if (sortOrder === 'newest') tmp.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    // 2d) Apply sorting
+    if (sortOrder === 'asc') {
+      tmp.sort((a, b) => a.price - b.price);
+    } else if (sortOrder === 'desc') {
+      tmp.sort((a, b) => b.price - a.price);
+    } else if (sortOrder === 'newest') {
+      tmp.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      );
+    }
 
     setState(prev => ({ ...prev, filtered: tmp }));
   }, [state.products, filters, sortOrder]);
 
+  // 3) Reset to page 1 when filters or sortOrder change
   useEffect(() => {
-    setCurrentPage(1); // reset to page 1 on filter/sort change
+    setCurrentPage(1);
   }, [filters, sortOrder]);
 
   if (state.isLoading) return <Loader />;
   if (state.error) return <div className="error-message">{state.error}</div>;
 
-  // pagination calculations
+  // 4) Pagination calculations
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = state.filtered.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = state.filtered.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   const totalPages = Math.ceil(state.filtered.length / productsPerPage);
 
   return (
@@ -109,7 +136,7 @@ export default function AllProductsPage() {
         <p className="product-count">{state.filtered.length} Results</p>
       </header>
 
-      {/* Filter/Sort Buttons */}
+      {/* Filter/Sort Buttons (mobile) */}
       <div className="mobile-header">
         <button
           className="mobile-btn mobile-filter-btn"
@@ -137,34 +164,46 @@ export default function AllProductsPage() {
       {/* Filters Panel */}
       {showFilter && (
         <div className="filter-panel">
-          <select className="dan"
+          <select
+            className="dan"
             value={filters.category}
-            onChange={e => setFilters(f => ({ ...f, category: e.target.value }))}
+            onChange={e =>
+              setFilters(f => ({ ...f, category: e.target.value }))
+            }
           >
             <option value="">All Categories</option>
             {state.categories.map(c => (
-              <option key={c._id} value={c._id}>{c.name}</option>
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
             ))}
           </select>
 
-          <select className="dan"
+          <select
+            className="dan"
             value={filters.gender[0] || ''}
             onChange={e => {
               const selected = e.target.value;
-              setFilters(f => ({ ...f, gender: selected ? [selected] : [] }));
+              setFilters(f => ({
+                ...f,
+                gender: selected ? [selected] : []
+              }));
             }}
           >
-             <option value="" >All Genders</option>
+            <option value="">All Genders</option>
             <option value="Men">Men</option>
             <option value="Women">Women</option>
           </select>
 
-          <select className="dan"
+          <select
+            className="dan"
             multiple
             size={5}
             value={filters.size}
             onChange={e => {
-              const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+              const selected = Array.from(e.target.selectedOptions).map(
+                opt => opt.value
+              );
               setFilters(f => ({ ...f, size: selected }));
             }}
           >
@@ -181,7 +220,11 @@ export default function AllProductsPage() {
       {/* Sort Panel */}
       {showSort && (
         <div className="sort-panel">
-          <select value={sortOrder} onChange={e => setSortOrder(e.target.value)} className="dan">
+          <select
+            value={sortOrder}
+            onChange={e => setSortOrder(e.target.value)}
+            className="dan"
+          >
             <option value="">Sort by</option>
             <option value="asc">Price: Low to High</option>
             <option value="desc">Price: High to Low</option>
@@ -204,9 +247,17 @@ export default function AllProductsPage() {
                 : null;
 
             return (
-              <Link to={`/product/${prod._id}`} key={prod._id} className="hd-card">
+              <Link
+                to={`/product/${prod._id}`}
+                key={prod._id}
+                className="hd-card"
+              >
                 <div className="hd-image-wrap">
-                  <img src={imgUrl} alt={prod.title} className="hd-image" />
+                  <img
+                    src={imgUrl}
+                    alt={prod.title}
+                    className="hd-image"
+                  />
                 </div>
                 <div className="hd-info">
                   <h3 className="hd-name">{prod.title}</h3>
