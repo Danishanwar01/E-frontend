@@ -4,40 +4,46 @@ import tshirtImage from '../assets/images/bcargo.jpg';
 import '../styles/JacketEdition.css';
 
 const CargoEdition = () => (
-  <div className="je-root">
-    <div className="je-content">
-      <div className="je-text-block">
-        <div className="je-title-wrapper">
-          <h1 className="je-title">
-            <span className="je-title-main">CARGO</span>
-            <span className="je-title-sub">COLLECTION 2025</span>
+  <div className="te-root">
+    <div className="te-content">
+    
+      <div className="te-text-block">
+        <div className="te-title-wrapper">
+          <h1 className="te-title">
+            <span className="te-title-main">CARGO</span>
+            <span className="te-title-sub">COLLECTION 2025</span>
           </h1>
-          <div className="je-title-decoration"></div>
+          <div className="te-title-decoration" />
         </div>
 
-        <div className="je-divider-block">
-          <div className="je-divider-line"></div>
-          <p className="je-subtext">Crafting Timeless Outerwear</p>
-          <div className="je-divider-line"></div>
+        <div className="te-divider-block">
+          <div className="te-divider-line" />
+          <p className="te-subtext">Crafting Timeless Outerwear</p>
+          <div className="te-divider-line" />
         </div>
 
-        <div className="je-buttons">
-          <Link to="/all-products" className="je-btn">
-            <span className="je-btn-text">Explore Mens</span>
-            <div className="je-btn-hover"></div>
+        <div className="te-buttons">
+          <Link to="/all-products" className="te-btn">
+            <span className="te-btn-text">Explore Mens</span>
+            <div className="te-btn-hover" />
           </Link>
-          <Link to="/all-products" className="je-btn">
-            <span className="je-btn-text">Discover Womens</span>
-            <div className="je-btn-hover"></div>
+          <Link to="/all-products" className="te-btn">
+            <span className="te-btn-text">Discover Womens</span>
+            <div className="te-btn-hover" />
           </Link>
         </div>
       </div>
 
-      <div className="je-image-block">
-        <div className="je-image-frame">
-          <img src={tshirtImage} alt="Premium tshirt Collection" className="je-image" />
+   
+      <div className="te-image-block">
+        <div className="te-image-frame">
+          <img
+            src={tshirtImage}
+            alt="Premium T-Shirt Collection"
+            className="te-image"
+          />
         </div>
-        <div className="je-image-pattern"></div>
+        <div className="te-image-pattern" />
       </div>
     </div>
   </div>
