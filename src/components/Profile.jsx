@@ -407,7 +407,7 @@ export default function Profile() {
                       }
                     >
                       {expandedOrder === order._id
-                        ? "▲ Collapse"
+                        ? "▲ Close"
                         : "▼ Details"}
                     </button>
 
